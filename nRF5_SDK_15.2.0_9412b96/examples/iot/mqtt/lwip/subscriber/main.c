@@ -48,9 +48,9 @@
  *        turns ON or OFF its own led.
  */
 
-//#define MQTT_TEST 1
+#define MQTT_TEST 1
 
-#define MESH_TEST 1
+//#define MESH_TEST 1
 
 #ifdef MESH_TEST
 #include <stdint.h>
