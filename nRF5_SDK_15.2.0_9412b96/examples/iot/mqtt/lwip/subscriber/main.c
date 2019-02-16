@@ -128,8 +128,11 @@ NRF_SDH_SOC_OBSERVER(m_mesh_soc_observer, MESH_SOC_OBSERVER_PRIO, mesh_soc_evt_h
 
 #define EVK-NINA-B1 1
 
+#define MOSQUITTO_SERVER_ON_PI
+
 /** Modify m_broker_addr according to your setup.
  *  The address provided below is a place holder.  */
+#ifndef MOSQUITTO_SERVER_ON_PI
 static const ipv6_addr_t m_broker_addr =
 {
     .u8 =
@@ -138,6 +141,16 @@ static const ipv6_addr_t m_broker_addr =
      0x00, 0x00, 0x00, 0x00,
      0x00, 0x00, 0x00, 0x01}
 };
+#else
+static const ipv6_addr_t m_broker_addr =
+{
+    .u8 =
+    {0x20, 0x01, 0x04, 0x70,
+     0x00, 0x19, 0x14, 0xfd,
+     0x00, 0x00, 0x00, 0x00,
+     0x00, 0x00, 0x00, 0x10}
+};
+#endif
 
 #define LED_ONE                             BSP_LED_0_MASK
 #define LED_TWO                             BSP_LED_1_MASK
