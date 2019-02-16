@@ -1,30 +1,30 @@
 /**
  * Copyright (c) 2013 - 2018, Nordic Semiconductor ASA
- *
+ * 
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- *
+ * 
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *
+ * 
  * 2. Redistributions in binary form, except as embedded into a Nordic
  *    Semiconductor ASA integrated circuit in a product or a software update for
  *    such product, must reproduce the above copyright notice, this list of
  *    conditions and the following disclaimer in the documentation and/or other
  *    materials provided with the distribution.
- *
+ * 
  * 3. Neither the name of Nordic Semiconductor ASA nor the names of its
  *    contributors may be used to endorse or promote products derived from this
  *    software without specific prior written permission.
- *
+ * 
  * 4. This software, with or without modification, must only be used with a
  *    Nordic Semiconductor ASA integrated circuit.
- *
+ * 
  * 5. Any software provided in binary form under this license must not be reverse
  *    engineered, decompiled, modified and/or disassembled.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY NORDIC SEMICONDUCTOR ASA "AS IS" AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -35,7 +35,7 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
+ * 
  */
 /** @file
  *
@@ -48,6 +48,48 @@
  *        turns ON or OFF its own led.
  */
 
+#define MQTT_TEST 1
+
+//#define MESH_TEST 1
+
+#ifdef MESH_TEST
+#include <stdint.h>
+#include <string.h>
+
+/* HAL */
+#include "boards.h"
+#include "simple_hal.h"
+#include "app_timer.h"
+
+/* Core */
+#include "nrf_mesh_config_core.h"
+#include "nrf_mesh_gatt.h"
+#include "nrf_mesh_configure.h"
+#include "nrf_mesh.h"
+#include "mesh_stack.h"
+#include "device_state_manager.h"
+#include "access_config.h"
+
+/* Provisioning and configuration */
+#include "mesh_provisionee.h"
+#include "mesh_app_utils.h"
+
+/* Models */
+#include "generic_onoff_client.h"
+
+/* Logging and RTT */
+#include "log.h"
+#include "rtt_input.h"
+
+/* Example specific includes */
+#include "app_config.h"
+#include "nrf_mesh_config_examples.h"
+#include "light_switch_example_common.h"
+#include "example_common.h"
+#include "ble_softdevice_support.h"
+#endif
+
+#ifdef MQTT_TEST
 #include <stdbool.h>
 #include <stdint.h>
 #include "boards.h"
@@ -72,13 +114,27 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
 
+#if 0
+#include "nrf_sdh_soc.h"
+
+#define MESH_SOC_OBSERVER_PRIO 0
+
+static void mesh_soc_evt_handler(uint32_t evt_id, void * p_context)
+{
+    nrf_mesh_on_sd_evt(evt_id);
+}
+NRF_SDH_SOC_OBSERVER(m_mesh_soc_observer, MESH_SOC_OBSERVER_PRIO, mesh_soc_evt_handler, NULL);
+#endif
+
+#define EVK-NINA-B1 1
+
 /** Modify m_broker_addr according to your setup.
  *  The address provided below is a place holder.  */
-static const ipv6_addr_t               m_broker_addr =
+static const ipv6_addr_t m_broker_addr =
 {
     .u8 =
-    {0x20, 0x01, 0x0D, 0xB8,
-     0x00, 0x00, 0x00, 0x00,
+    {0x20, 0x01, 0x41, 0xd0,
+     0x00, 0x0a, 0x3a, 0x10,
      0x00, 0x00, 0x00, 0x00,
      0x00, 0x00, 0x00, 0x01}
 };
@@ -86,13 +142,9 @@ static const ipv6_addr_t               m_broker_addr =
 #define LED_ONE                             BSP_LED_0_MASK
 #define LED_TWO                             BSP_LED_1_MASK
 #define LED_THREE                           BSP_LED_2_MASK
-#define LED_FOUR                            BSP_LED_3_MASK
 #define ALL_APP_LED                        (BSP_LED_0_MASK | BSP_LED_1_MASK | \
-                                            BSP_LED_2_MASK | BSP_LED_3_MASK)                        /**< Define used for simultaneous operation of all application LEDs. */
+                                            BSP_LED_2_MASK )                        /**< Define used for simultaneous operation of all application LEDs. */
 
-#ifdef COMMISSIONING_ENABLED
-#define ERASE_BUTTON_PIN_NO                 BSP_BUTTON_3                                            /**< Button used to erase commissioning settings. */
-#endif // COMMISSIONING_ENABLED
 
 #define LWIP_SYS_TICK_MS                    10                                                      /**< Interval for timer used as trigger to send. */
 #define LED_BLINK_INTERVAL_MS               300                                                     /**< LED blinking interval. */
@@ -104,86 +156,17 @@ static const ipv6_addr_t               m_broker_addr =
 
 #define APP_ENABLE_LOGS                     1                                                       /**< Enable logs in the application. */
 
-#if (APP_ENABLE_LOGS == 1)
-
-#define APPL_LOG  NRF_LOG_INFO
-#define APPL_DUMP NRF_LOG_RAW_HEXDUMP_INFO
-#define APPL_ADDR IPV6_ADDRESS_LOG
-
-#else // APP_ENABLE_LOGS
-
-#define APPL_LOG(...)
-#define APPL_DUMP(...)
-#define APPL_ADDR(...)
-
-#endif // APP_ENABLE_LOGS
-
-#define APP_MQTT_BROKER_PORT                8883                                                    /**< Port number of MQTT Broker being used. */
+#define APP_MQTT_BROKER_PORT                1883                                                    /**< Port number of MQTT Broker being used. */
 #define APP_MQTT_SUBSCRIPTION_PKT_ID        10                                                      /**< Unique identification of subscription, can be any unsigned 16 bit integer value. */
 #define APP_MQTT_SUBSCRIPTION_TOPIC         "led/state"                                             /**< MQTT topic to which this application subscribes. */
-
-/**@brief Application state with respect to MQTT. */
-typedef enum
-{
-    APP_MQTT_STATE_IDLE,                                                                            /**< Indicates no MQTT connection exists. */
-    APP_MQTT_STATE_CONNECTED,                                                                       /**< Indicates MQTT connection is established. */
-    APP_MQTT_STATE_SUBSCRIBED                                                                       /**< Indicates application is subscribed for MQTT topic on the connection. */
-} app_mqtt_state_t;
-
-typedef enum
-{
-    LEDS_INACTIVE = 0,
-    LEDS_CONNECTABLE_MODE,
-    LEDS_IPV6_IF_DOWN,
-    LEDS_IPV6_IF_UP,
-    LEDS_CONNECTED_TO_BROKER,
-    LEDS_SUBSCRIBED_TO_TOPIC
-} display_state_t;
 
 APP_TIMER_DEF(m_iot_timer_tick_src_id);                                                             /**< System Timer used to service CoAP and LWIP periodically. */
 eui64_t                                     eui64_local_iid;                                        /**< Local EUI64 value that is used as the IID for*/
 static ipv6_medium_instance_t               m_ipv6_medium;
 static mqtt_client_t                        m_app_mqtt_client;                                      /**< MQTT Client instance reference provided by the MQTT module. */
 static const char                           m_client_id[] = "nrfSubscriber";                        /**< Unique MQTT client identifier. */
-static display_state_t                      m_display_state = LEDS_INACTIVE;                        /**< Board LED display state. */
-static app_mqtt_state_t                     m_connection_state = APP_MQTT_STATE_IDLE;               /**< MQTT Connection state. */
-static const uint8_t identity[] = {0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x5f, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x79};
-static const uint8_t shared_secret[] = {0x73, 0x65, 0x63, 0x72, 0x65, 0x74, 0x50, 0x53, 0x4b};
-
-static nrf_tls_preshared_key_t m_preshared_key = {
-    .p_identity     = &identity[0],
-    .p_secret_key   = &shared_secret[0],
-    .identity_len   = 15,
-    .secret_key_len = 9
-};
-
-static nrf_tls_key_settings_t m_tls_keys = {
-    .p_psk = &m_preshared_key
-};
 
 void app_mqtt_evt_handler(mqtt_client_t * const p_client, const mqtt_evt_t * p_evt);
-
-#ifdef COMMISSIONING_ENABLED
-static bool                                 m_power_off_on_failure = false;
-static bool                                 m_identity_mode_active;
-#endif // COMMISSIONING_ENABLED
-
-
-/**@brief Callback function for asserts in the SoftDevice.
- *
- * @details This function will be called in case of an assert in the SoftDevice.
- *
- * @warning This handler is an example only and does not fit a final product. You need to analyze
- *          how your product is supposed to react in case of Assert.
- * @warning On assert from the SoftDevice, the system can only recover on reset.
- *
- * @param[in]   line_num   Line number of the failing ASSERT call.
- * @param[in]   file_name  File name of the failing ASSERT call.
- */
-void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
-{
-    app_error_handler(DEAD_BEEF, line_num, p_file_name);
-}
 
 
 /**@brief Function for the LEDs initialization.
@@ -199,87 +182,13 @@ static void leds_init(void)
     LEDS_OFF(ALL_APP_LED);
 }
 
-
 /**@brief Timer callback used for controlling board LEDs to represent application state.
  *
  * @param[in]   wall_clock_value   The value of the wall clock that triggered the callback.
  */
 static void blink_timeout_handler(iot_timer_time_in_ms_t wall_clock_value)
 {
-    UNUSED_PARAMETER(wall_clock_value);
-
-#ifdef COMMISSIONING_ENABLED
-    static bool id_mode_previously_enabled;
-#endif // COMMISSIONING_ENABLED
-
-    switch (m_display_state)
-    {
-        case LEDS_INACTIVE:
-        {
-            LEDS_OFF(ALL_APP_LED);
-            break;
-        }
-        case LEDS_CONNECTABLE_MODE:
-        {
-            LEDS_INVERT(LED_ONE);
-            LEDS_OFF(LED_TWO);
-            LEDS_OFF(LED_THREE);
-            break;
-        }
-        case LEDS_IPV6_IF_DOWN:
-        {
-            LEDS_INVERT(LED_TWO);
-            LEDS_OFF(LED_ONE);
-            LEDS_OFF(LED_THREE);
-            break;
-        }
-        case LEDS_IPV6_IF_UP:
-        {
-            LEDS_ON(LED_ONE);
-            LEDS_OFF(LED_TWO);
-            LEDS_OFF(LED_THREE);
-            break;
-        }
-        case LEDS_CONNECTED_TO_BROKER:
-        {
-            LEDS_ON(LED_TWO);
-            LEDS_OFF(LED_ONE);
-            LEDS_OFF(LED_THREE);
-            break;
-        }
-        case LEDS_SUBSCRIBED_TO_TOPIC:
-        {
-            LEDS_ON(LED_TWO);
-            LEDS_ON(LED_THREE);
-            LEDS_OFF(LED_ONE);
-            break;
-        }
-        default:
-        {
-            break;
-        }
-    }
-
-#ifdef COMMISSIONING_ENABLED
-    if ((id_mode_previously_enabled == false) && (m_identity_mode_active == true))
-    {
-        LEDS_OFF(LED_THREE | LED_FOUR);
-    }
-
-    if ((id_mode_previously_enabled == true) && (m_identity_mode_active == true))
-    {
-        LEDS_INVERT(LED_THREE | LED_FOUR);
-    }
-
-    if ((id_mode_previously_enabled == true) && (m_identity_mode_active == false))
-    {
-        LEDS_OFF(LED_THREE | LED_FOUR);
-    }
-
-    id_mode_previously_enabled = m_identity_mode_active;
-#endif // COMMISSIONING_ENABLED
 }
-
 
 /**@brief Connect to MQTT broker. */
 static void app_mqtt_connect(void)
@@ -293,8 +202,8 @@ static void app_mqtt_connect(void)
     m_app_mqtt_client.client_id.utf_strlen = strlen(m_client_id);
     m_app_mqtt_client.p_password           = NULL;
     m_app_mqtt_client.p_user_name          = NULL;
-    m_app_mqtt_client.transport_type       = MQTT_TRANSPORT_SECURE;
-    m_app_mqtt_client.p_security_settings  = &m_tls_keys;
+    m_app_mqtt_client.transport_type       = MQTT_TRANSPORT_NON_SECURE;
+    m_app_mqtt_client.p_security_settings  = NULL;
 
     UNUSED_VARIABLE(mqtt_connect(&m_app_mqtt_client));
 }
@@ -326,8 +235,6 @@ static void app_mqtt_subscribe(void)
 
     if (err_code == NRF_SUCCESS)
     {
-        m_connection_state = APP_MQTT_STATE_SUBSCRIBED;
-        m_display_state = LEDS_SUBSCRIBED_TO_TOPIC;
     }
 }
 
@@ -358,54 +265,20 @@ static void app_mqtt_unsubscribe(void)
 
     if (err_code == NRF_SUCCESS)
     {
-        m_connection_state = APP_MQTT_STATE_CONNECTED;
-        m_display_state = LEDS_CONNECTED_TO_BROKER;
     }
 }
 
 
 static void button_event_handler(uint8_t pin_no, uint8_t button_action)
 {
-#ifdef COMMISSIONING_ENABLED
-    if ((button_action == APP_BUTTON_PUSH) && (pin_no == ERASE_BUTTON_PIN_NO))
-    {
-        APPL_LOG("Erasing all commissioning settings from persistent storage...");
-        commissioning_settings_clear();
-        return;
-    }
-#endif // COMMISSIONING_ENABLED
-
     if (button_action == APP_BUTTON_PUSH)
     {
         switch (pin_no)
         {
             case BSP_BUTTON_0:
             {
-                if (m_connection_state == APP_MQTT_STATE_IDLE)
-                {
-                    app_mqtt_connect();
-                }
-                break;
-            }
-            case BSP_BUTTON_1:
-            {
-                if (m_connection_state == APP_MQTT_STATE_CONNECTED)
-                {
-                    app_mqtt_subscribe();
-                }
-                else if (m_connection_state == APP_MQTT_STATE_SUBSCRIBED)
-                {
-                    app_mqtt_unsubscribe();
-                }
-                break;
-            }
-            case BSP_BUTTON_2:
-            {
-                if ((m_connection_state == APP_MQTT_STATE_CONNECTED) ||
-                    (m_connection_state == APP_MQTT_STATE_SUBSCRIBED))
-                {
-                    UNUSED_VARIABLE(mqtt_disconnect(&m_app_mqtt_client));
-                }
+                NRF_LOG_INFO ("app_mqtt_connect...");
+                app_mqtt_connect();
                 break;
             }
             default:
@@ -413,7 +286,6 @@ static void button_event_handler(uint8_t pin_no, uint8_t button_action)
         }
     }
 }
-
 
 static void button_init(void)
 {
@@ -423,10 +295,6 @@ static void button_init(void)
     {
         {BSP_BUTTON_0,        false, BUTTON_PULL, button_event_handler},
         {BSP_BUTTON_1,        false, BUTTON_PULL, button_event_handler},
-        {BSP_BUTTON_2,        false, BUTTON_PULL, button_event_handler},
-#ifdef COMMISSIONING_ENABLED
-        {ERASE_BUTTON_PIN_NO, false, BUTTON_PULL, button_event_handler}
-#endif // COMMISSIONING_ENABLED
     };
 
     #define BUTTON_DETECTION_DELAY APP_TIMER_TICKS(50)
@@ -519,14 +387,11 @@ static void timers_init(void)
 static void iot_timer_init(void)
 {
     uint32_t err_code;
-
+#if 1
     static const iot_timer_client_t list_of_clients[] =
     {
         {system_timer_callback,      LWIP_SYS_TICK_MS},
-        {blink_timeout_handler,      LED_BLINK_INTERVAL_MS},
-#ifdef COMMISSIONING_ENABLED
-        {commissioning_time_tick,    SEC_TO_MILLISEC(COMMISSIONING_TICK_INTERVAL_SEC)}
-#endif // COMMISSIONING_ENABLED
+     /*   {blink_timeout_handler,      LED_BLINK_INTERVAL_MS},*/
     };
 
     // The list of IoT Timer clients is declared as a constant.
@@ -539,7 +404,7 @@ static void iot_timer_init(void)
     // Passing the list of clients to the IoT Timer module.
     err_code = iot_timer_client_list_set(&iot_timer_clients);
     APP_ERROR_CHECK(err_code);
-
+#endif
     // Starting the app timer instance that is the tick source for the IoT Timer.
     err_code = app_timer_start(m_iot_timer_tick_src_id,
                                APP_TIMER_TICKS(IOT_TIMER_RESOLUTION_IN_MS),
@@ -555,21 +420,15 @@ static void scheduler_init(void)
     APP_SCHED_INIT(SCHED_MAX_EVENT_DATA_SIZE, SCHED_QUEUE_SIZE);
 }
 
-
 /**@brief Function to handle interface up event. */
 void nrf_driver_interface_up(iot_interface_t const * p_interface)
 {
     UNUSED_PARAMETER(p_interface);
 
-#ifdef COMMISSIONING_ENABLED
-    commissioning_joining_mode_timer_ctrl(JOINING_MODE_TIMER_STOP_RESET);
-#endif // COMMISSIONING_ENABLED
-
-    APPL_LOG ("IPv6 Interface Up.");
+    NRF_LOG_INFO ("IPv6 Interface Up.");
+    LEDS_ON(LED_ONE);
 
     sys_check_timeouts();
-
-    m_display_state = LEDS_IPV6_IF_UP;
 }
 
 
@@ -578,15 +437,8 @@ void nrf_driver_interface_down(iot_interface_t const * p_interface)
 {
     UNUSED_PARAMETER(p_interface);
 
-#ifdef COMMISSIONING_ENABLED
-    commissioning_joining_mode_timer_ctrl(JOINING_MODE_TIMER_START);
-#endif // COMMISSIONING_ENABLED
-
-    APPL_LOG ("IPv6 Interface Down.");
-
-    m_display_state = LEDS_IPV6_IF_DOWN;
+    NRF_LOG_INFO ("IPv6 Interface Down.");
 }
-
 
 void app_mqtt_evt_handler(mqtt_client_t * const p_client, const mqtt_evt_t * p_evt)
 {
@@ -594,18 +446,20 @@ void app_mqtt_evt_handler(mqtt_client_t * const p_client, const mqtt_evt_t * p_e
     {
         case MQTT_EVT_CONNACK:
         {
-            APPL_LOG (">> MQTT_EVT_CONNACK");
+            NRF_LOG_INFO (">> MQTT_EVT_CONNACK");
             if (p_evt->result == NRF_SUCCESS)
             {
-                m_connection_state = APP_MQTT_STATE_CONNECTED;
-                m_display_state = LEDS_CONNECTED_TO_BROKER;
+                app_mqtt_subscribe();
+                NRF_LOG_INFO (">> mqtt_subscribe");
+                LEDS_OFF(LED_ONE);
+                LEDS_ON(LED_TWO);
             }
             break;
         }
         case MQTT_EVT_PUBLISH:
         {
-            APPL_LOG (">> Data length 0x%04lX", p_evt->param.publish.message.payload.bin_strlen);
-            APPL_LOG (">> Topic length 0x%04lX", p_evt->param.publish.message.topic.topic.utf_strlen);
+            NRF_LOG_INFO (">> Data length 0x%04lX", p_evt->param.publish.message.payload.bin_strlen);
+            NRF_LOG_INFO (">> Topic length 0x%04lX", p_evt->param.publish.message.topic.topic.utf_strlen);
 
             if (p_evt->param.publish.message.payload.bin_strlen == 1)
             {
@@ -613,12 +467,12 @@ void app_mqtt_evt_handler(mqtt_client_t * const p_client, const mqtt_evt_t * p_e
                 if ((p_evt->param.publish.message.payload.p_bin_str[0] == 0) ||
                     (p_evt->param.publish.message.payload.p_bin_str[0] == 0x30))
                 {
-                    LEDS_OFF(LED_FOUR);
+                    LEDS_OFF(LED_ONE);
                 }
                 else if ((p_evt->param.publish.message.payload.p_bin_str[0] == 1) ||
                          (p_evt->param.publish.message.payload.p_bin_str[0] == 0x31))
                 {
-                    LEDS_ON(LED_FOUR);
+                    LEDS_ON(LED_ONE);
                 }
             }
             if (p_evt->param.publish.message.topic.qos == MQTT_QoS_1_ATLEAST_ONCE)
@@ -630,7 +484,7 @@ void app_mqtt_evt_handler(mqtt_client_t * const p_client, const mqtt_evt_t * p_e
                 // Send acknowledgment.
                 uint32_t err_code = mqtt_publish_ack(p_client, &ack_param);
 
-                APPL_LOG (">> mqtt_publish_ack message id 0x%04x, result 0x%08lx",
+                NRF_LOG_INFO (">> mqtt_publish_ack message id 0x%04x, result 0x%08lx",
                           p_evt->param.publish.message_id,
                           err_code);
                 UNUSED_VARIABLE(err_code);
@@ -640,9 +494,7 @@ void app_mqtt_evt_handler(mqtt_client_t * const p_client, const mqtt_evt_t * p_e
         }
         case MQTT_EVT_DISCONNECT:
         {
-            APPL_LOG (">> MQTT_EVT_DISCONNECT");
-            m_connection_state = APP_MQTT_STATE_IDLE;
-            m_display_state = LEDS_IPV6_IF_UP;
+            NRF_LOG_INFO (">> MQTT_EVT_DISCONNECT");
             break;
         }
         default:
@@ -658,32 +510,14 @@ static void connectable_mode_enter(void)
     uint32_t err_code = ipv6_medium_connectable_mode_enter(m_ipv6_medium.ipv6_medium_instance_id);
     APP_ERROR_CHECK(err_code);
 
-    APPL_LOG("Physical layer in connectable mode.");
-    m_display_state = LEDS_CONNECTABLE_MODE;
+    NRF_LOG_INFO("Physical layer in connectable mode.");
+
 }
 
 
 static void on_ipv6_medium_evt(ipv6_medium_evt_t * p_ipv6_medium_evt)
 {
-    switch (p_ipv6_medium_evt->ipv6_medium_evt_id)
-    {
-        case IPV6_MEDIUM_EVT_CONN_UP:
-        {
-            APPL_LOG("Physical layer: connected.");
-            m_display_state = LEDS_IPV6_IF_DOWN;
-            break;
-        }
-        case IPV6_MEDIUM_EVT_CONN_DOWN:
-        {
-            APPL_LOG("Physical layer: disconnected.");
-            connectable_mode_enter();
-            break;
-        }
-        default:
-        {
-            break;
-        }
-    }
+
 }
 
 
@@ -692,54 +526,322 @@ static void on_ipv6_medium_error(ipv6_medium_error_t * p_ipv6_medium_error)
     // Do something.
 }
 
-
-#ifdef COMMISSIONING_ENABLED
-void commissioning_id_mode_cb(mode_control_cmd_t control_command)
-{
-    switch (control_command)
-    {
-        case CMD_IDENTITY_MODE_ENTER:
-        {
-            LEDS_OFF(LED_THREE | LED_FOUR);
-            m_identity_mode_active = true;
-
-            break;
-        }
-        case CMD_IDENTITY_MODE_EXIT:
-        {
-            m_identity_mode_active = false;
-            LEDS_OFF((LED_THREE | LED_FOUR));
-
-            break;
-        }
-        default:
-        {
-            break;
-        }
-    }
-}
-
-
-void commissioning_power_off_cb(bool power_off_on_failure)
-{
-    m_power_off_on_failure = power_off_on_failure;
-
-    APPL_LOG("Commissioning: do power_off on failure: %s.",
-             m_power_off_on_failure ? "true" : "false");
-}
-#endif // COMMISSIONING_ENABLED
-
-
 /**@brief Function for initializing the nrf log module.
  */
-static void log_init(void)
+static void sdk_log_init(void)
 {
     ret_code_t err_code = NRF_LOG_INIT(NULL);
     APP_ERROR_CHECK(err_code);
 
     NRF_LOG_DEFAULT_BACKENDS_INIT();
 }
+#endif
 
+#ifdef MESH_TEST
+/**
+ *------------------------------------------
+ * Start of mesh app 
+ *------------------------------------------
+ */
+
+#define APP_STATE_OFF                (0)
+#define APP_STATE_ON                 (1)
+
+#define APP_UNACK_MSG_REPEAT_COUNT   (2)
+
+static generic_onoff_client_t m_clients[CLIENT_MODEL_INSTANCE_COUNT];
+static bool                   m_device_provisioned;
+
+/* Forward declaration */
+static void app_gen_onoff_client_publish_interval_cb(access_model_handle_t handle, void * p_self);
+static void app_generic_onoff_client_status_cb(const generic_onoff_client_t * p_self,
+                                               const access_message_rx_meta_t * p_meta,
+                                               const generic_onoff_status_params_t * p_in);
+static void app_gen_onoff_client_transaction_status_cb(access_model_handle_t model_handle,
+                                                       void * p_args,
+                                                       access_reliable_status_t status);
+
+const generic_onoff_client_callbacks_t client_cbs =
+{
+    .onoff_status_cb = app_generic_onoff_client_status_cb,
+    .ack_transaction_status_cb = app_gen_onoff_client_transaction_status_cb,
+    .periodic_publish_cb = app_gen_onoff_client_publish_interval_cb
+};
+
+static void device_identification_start_cb(uint8_t attention_duration_s)
+{
+    hal_led_mask_set(LEDS_MASK, false);
+    hal_led_blink_ms(BSP_LED_2_MASK  | BSP_LED_3_MASK,
+                     LED_BLINK_ATTENTION_INTERVAL_MS,
+                     LED_BLINK_ATTENTION_COUNT(attention_duration_s));
+}
+
+static void provisioning_aborted_cb(void)
+{
+    hal_led_blink_stop();
+}
+
+static void provisioning_complete_cb(void)
+{
+    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Successfully provisioned\n");
+
+#if MESH_FEATURE_GATT_ENABLED
+    /* Restores the application parameters after switching from the Provisioning
+     * service to the Proxy  */
+    gap_params_init();
+    conn_params_init();
+#endif
+
+    dsm_local_unicast_address_t node_address;
+    dsm_local_unicast_addresses_get(&node_address);
+    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Node Address: 0x%04x \n", node_address.address_start);
+
+    hal_led_blink_stop();
+    hal_led_mask_set(LEDS_MASK, LED_MASK_STATE_OFF);
+    hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_PROV);
+}
+
+/* This callback is called periodically if model is configured for periodic publishing */
+static void app_gen_onoff_client_publish_interval_cb(access_model_handle_t handle, void * p_self)
+{
+     __LOG(LOG_SRC_APP, LOG_LEVEL_WARN, "Publish desired message here.\n");
+}
+
+/* Acknowledged transaction status callback, if acknowledged transfer fails, application can
+* determine suitable course of action (e.g. re-initiate previous transaction) by using this
+* callback.
+*/
+static void app_gen_onoff_client_transaction_status_cb(access_model_handle_t model_handle,
+                                                       void * p_args,
+                                                       access_reliable_status_t status)
+{
+    switch(status)
+    {
+        case ACCESS_RELIABLE_TRANSFER_SUCCESS:
+            __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Acknowledged transfer success.\n");
+            break;
+
+        case ACCESS_RELIABLE_TRANSFER_TIMEOUT:
+            hal_led_blink_ms(LEDS_MASK, LED_BLINK_SHORT_INTERVAL_MS, LED_BLINK_CNT_NO_REPLY);
+            __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Acknowledged transfer timeout.\n");
+            break;
+
+        case ACCESS_RELIABLE_TRANSFER_CANCELLED:
+            __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Acknowledged transfer cancelled.\n");
+            break;
+
+        default:
+            ERROR_CHECK(NRF_ERROR_INTERNAL);
+            break;
+    }
+}
+
+/* Generic OnOff client model interface: Process the received status message in this callback */
+static void app_generic_onoff_client_status_cb(const generic_onoff_client_t * p_self,
+                                               const access_message_rx_meta_t * p_meta,
+                                               const generic_onoff_status_params_t * p_in)
+{
+    if (p_in->remaining_time_ms > 0)
+    {
+        __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "OnOff server: 0x%04x, Present OnOff: %d, Target OnOff: %d, Remaining Time: %d ms\n",
+              p_meta->src.value, p_in->present_on_off, p_in->target_on_off, p_in->remaining_time_ms);
+    }
+    else
+    {
+        __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "OnOff server: 0x%04x, Present OnOff: %d\n",
+              p_meta->src.value, p_in->present_on_off);
+    }
+}
+
+static void node_reset(void)
+{
+    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "----- Node reset  -----\n");
+    hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_RESET);
+    /* This function may return if there are ongoing flash operations. */
+    mesh_stack_device_reset();
+}
+
+static void config_server_evt_cb(const config_server_evt_t * p_evt)
+{
+    if (p_evt->type == CONFIG_SERVER_EVT_NODE_RESET)
+    {
+        node_reset();
+    }
+}
+
+static void mesh_button_event_handler(uint32_t button_number)
+{
+    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Button %u pressed\n", button_number);
+
+    uint32_t status = NRF_SUCCESS;
+    generic_onoff_set_params_t set_params;
+    model_transition_t transition_params;
+    static uint8_t tid = 0;
+
+    /* Button 1: On, Button 2: Off, Client[0]
+     * Button 2: On, Button 3: Off, Client[1]
+     */
+
+    switch(button_number)
+    {
+        case 0:
+        case 2:
+            set_params.on_off = APP_STATE_ON;
+            break;
+
+        case 1:
+        case 3:
+            set_params.on_off = APP_STATE_OFF;
+            break;
+    }
+
+    set_params.tid = tid++;
+    transition_params.delay_ms = APP_CONFIG_ONOFF_DELAY_MS;
+    transition_params.transition_time_ms = APP_CONFIG_ONOFF_TRANSITION_TIME_MS;
+    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Sending msg: ONOFF SET %d\n", set_params.on_off);
+
+    switch (button_number)
+    {
+        case 0:
+        case 1:
+            /* Demonstrate acknowledged transaction, using 1st client model instance */
+            /* In this examples, users will not be blocked if the model is busy */
+            (void)access_model_reliable_cancel(m_clients[0].model_handle);
+            status = generic_onoff_client_set(&m_clients[0], &set_params, &transition_params);
+            hal_led_pin_set(BSP_LED_0, set_params.on_off);
+            break;
+
+        case 2:
+        case 3:
+            /* Demonstrate un-acknowledged transaction, using 2nd client model instance */
+            status = generic_onoff_client_set_unack(&m_clients[1], &set_params,
+                                                    &transition_params, APP_UNACK_MSG_REPEAT_COUNT);
+            hal_led_pin_set(BSP_LED_1, set_params.on_off);
+            break;
+    }
+
+    switch (status)
+    {
+        case NRF_SUCCESS:
+            break;
+
+        case NRF_ERROR_NO_MEM:
+        case NRF_ERROR_BUSY:
+        case NRF_ERROR_INVALID_STATE:
+            __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Client %u cannot send\n", button_number);
+            hal_led_blink_ms(LEDS_MASK, LED_BLINK_SHORT_INTERVAL_MS, LED_BLINK_CNT_NO_REPLY);
+            break;
+
+        case NRF_ERROR_INVALID_PARAM:
+            /* Publication not enabled for this client. One (or more) of the following is wrong:
+             * - An application key is missing, or there is no application key bound to the model
+             * - The client does not have its publication state set
+             *
+             * It is the provisioner that adds an application key, binds it to the model and sets
+             * the model's publication state.
+             */
+            __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Publication not configured for client %u\n", button_number);
+            break;
+
+        default:
+            ERROR_CHECK(status);
+            break;
+    }
+}
+
+static void rtt_input_handler(int key)
+{
+    if (key >= '0' && key <= '3')
+    {
+        uint32_t button_number = key - '0';
+        mesh_button_event_handler(button_number);
+    }
+}
+
+
+static void models_init_cb(void)
+{
+    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Initializing and adding models\n");
+
+    for (uint32_t i = 0; i < CLIENT_MODEL_INSTANCE_COUNT; ++i)
+    {
+        m_clients[i].settings.p_callbacks = &client_cbs;
+        m_clients[i].settings.timeout = 0;
+        m_clients[i].settings.force_segmented = APP_CONFIG_FORCE_SEGMENTATION;
+        m_clients[i].settings.transmic_size = APP_CONFIG_MIC_SIZE;
+
+        ERROR_CHECK(generic_onoff_client_init(&m_clients[i], i + 1));
+    }
+}
+
+static void mesh_init(void)
+{
+    mesh_stack_init_params_t init_params =
+    {
+        .core.irq_priority       = NRF_MESH_IRQ_PRIORITY_LOWEST,
+        .core.lfclksrc           = DEV_BOARD_LF_CLK_CFG,
+        .core.p_uuid             = NULL,
+        .models.models_init_cb   = models_init_cb,
+        .models.config_server_cb = config_server_evt_cb
+    };
+    ERROR_CHECK(mesh_stack_init(&init_params, &m_device_provisioned));
+}
+
+static void mesh_initialize(void)
+{
+    __LOG_INIT(LOG_SRC_APP | LOG_SRC_ACCESS | LOG_SRC_BEARER, LOG_LEVEL_INFO, LOG_CALLBACK_DEFAULT);
+    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "----- BLE Mesh Light Switch Client Demo -----\n");
+
+    ERROR_CHECK(app_timer_init());
+    hal_leds_init();
+
+#if BUTTON_BOARD
+    ERROR_CHECK(hal_buttons_init(mesh_button_event_handler));
+#endif
+
+    ble_stack_init();
+
+#if MESH_FEATURE_GATT_ENABLED
+    gap_params_init();
+    conn_params_init();
+#endif
+
+    mesh_init();
+}
+
+static void mesh_start(void)
+{
+    rtt_input_enable(rtt_input_handler, RTT_INPUT_POLL_PERIOD_MS);
+
+    if (!m_device_provisioned)
+    {
+        static const uint8_t static_auth_data[NRF_MESH_KEY_SIZE] = STATIC_AUTH_DATA;
+        mesh_provisionee_start_params_t prov_start_params =
+        {
+            .p_static_data    = static_auth_data,
+            .prov_complete_cb = provisioning_complete_cb,
+            .prov_device_identification_start_cb = device_identification_start_cb,
+            .prov_device_identification_stop_cb = NULL,
+            .prov_abort_cb = provisioning_aborted_cb,
+            .p_device_uri = EX_URI_LS_CLIENT
+        };
+        ERROR_CHECK(mesh_provisionee_prov_start(&prov_start_params));
+    }
+
+    //mesh_app_uuid_print(nrf_mesh_configure_device_uuid_get());
+
+    ERROR_CHECK(mesh_stack_start());
+
+    hal_led_mask_set(LEDS_MASK, LED_MASK_STATE_OFF);
+    hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_START);
+}
+
+/**
+ *------------------------------------------
+ * End of mesh app 
+ *------------------------------------------
+ */
+#endif
 
 /**
  * @brief Function for application main entry.
@@ -747,10 +849,10 @@ static void log_init(void)
 int main(void)
 {
     uint32_t err_code;
-
+#if MQTT_TEST
     // Initialize.
     scheduler_init();
-    log_init();
+    sdk_log_init();
     leds_init();
     timers_init();
     iot_timer_init();
@@ -760,10 +862,6 @@ int main(void)
     memset(&ipv6_medium_init_params, 0x00, sizeof(ipv6_medium_init_params));
     ipv6_medium_init_params.ipv6_medium_evt_handler    = on_ipv6_medium_evt;
     ipv6_medium_init_params.ipv6_medium_error_handler  = on_ipv6_medium_error;
-#ifdef COMMISSIONING_ENABLED
-    ipv6_medium_init_params.commissioning_id_mode_cb   = commissioning_id_mode_cb;
-    ipv6_medium_init_params.commissioning_power_off_cb = commissioning_power_off_cb;
-#endif // COMMISSIONING_ENABLED
 
     err_code = ipv6_medium_init(&ipv6_medium_init_params,
                                 IPV6_MEDIUM_ID_BLE,
@@ -782,7 +880,7 @@ int main(void)
 
     ip_stack_init();
 
-    APPL_LOG("Application started.");
+    NRF_LOG_INFO("Application started.");
 
     // Start execution.
     connectable_mode_enter();
@@ -799,8 +897,15 @@ int main(void)
             APP_ERROR_CHECK(err_code);
         }
     }
-}
+#endif
+#if MESH_TEST
+    mesh_initialize();
+    mesh_start();
 
-/**
- * @}
- */
+    // Enter main loop.
+    for (;;)
+    {
+            sd_app_evt_wait();
+    }
+#endif
+}
