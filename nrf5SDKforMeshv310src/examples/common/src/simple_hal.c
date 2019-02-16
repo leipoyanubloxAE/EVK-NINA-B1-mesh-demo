@@ -166,12 +166,20 @@ void hal_led_blink_stop(void)
 
 void hal_leds_init(void)
 {
+#if 0 /* NINA-B1 */
     for (uint32_t i = LED_START; i <= LED_STOP; ++i)
     {
         NRF_GPIO->PIN_CNF[i] = LED_PIN_CONFIG;
         NRF_GPIO->OUTSET = 1UL << i;
     }
-
+#else
+    uint8_t led_list[LEDS_NUMBER] = LEDS_LIST;
+    for (uint8_t i = 0; i <= LEDS_NUMBER; ++i)
+    {
+        NRF_GPIO->PIN_CNF[led_list[i]] = LED_PIN_CONFIG;
+        NRF_GPIO->OUTSET = 1UL << led_list[i];
+    }
+#endif
     APP_ERROR_CHECK(app_timer_create(&m_blink_timer, APP_TIMER_MODE_REPEATED, led_timeout_handler));
 }
 #endif /* SIMPLE_HAL_LEDS_ENABLED */
@@ -206,6 +214,7 @@ uint32_t hal_buttons_init(hal_button_handler_cb_t cb)
  *****************************************************************************/
 
 #if BUTTON_BOARD
+#if 0
 void GPIOTE_IRQHandler(void)
 {
     NRF_GPIOTE->EVENTS_PORT = 0;
@@ -223,4 +232,5 @@ void GPIOTE_IRQHandler(void)
         }
     }
 }
+#endif
 #endif

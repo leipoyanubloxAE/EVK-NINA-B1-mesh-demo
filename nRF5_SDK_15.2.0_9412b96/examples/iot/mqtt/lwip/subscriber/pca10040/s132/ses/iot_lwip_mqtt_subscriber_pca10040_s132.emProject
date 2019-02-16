@@ -8,15 +8,15 @@
       arm_endian="Little"
       arm_fp_abi="Hard"
       arm_fpu_type="FPv4-SP-D16"
-      arm_linker_heap_size="0"
+      arm_linker_heap_size="1024"
       arm_linker_process_stack_size="0"
-      arm_linker_stack_size="4608"
+      arm_linker_stack_size="2048"
       arm_linker_treat_warnings_as_errors="No"
       arm_simulator_memory_simulation_parameter="RWX 00000000,00100000,FFFFFFFF;RWX 20000000,00010000,CDCDCDCD"
       arm_target_device_name="nRF52832_xxAA"
       arm_target_interface_type="SWD"
-      c_user_include_directories="../../../config;../../../../../../../../components/iot/errno;../../../../../../../../components;../../../../../../../../components/ble/ble_advertising;../../../../../../../../components/ble/ble_dtm;../../../../../../../../components/ble/ble_racp;../../../../../../../../components/ble/ble_services/ble_ancs_c;../../../../../../../../components/ble/ble_services/ble_ans_c;../../../../../../../../components/ble/ble_services/ble_bas;../../../../../../../../components/ble/ble_services/ble_bas_c;../../../../../../../../components/ble/ble_services/ble_cscs;../../../../../../../../components/ble/ble_services/ble_cts_c;../../../../../../../../components/ble/ble_services/ble_dfu;../../../../../../../../components/ble/ble_services/ble_dis;../../../../../../../../components/ble/ble_services/ble_gls;../../../../../../../../components/ble/ble_services/ble_hids;../../../../../../../../components/ble/ble_services/ble_hrs;../../../../../../../../components/ble/ble_services/ble_hrs_c;../../../../../../../../components/ble/ble_services/ble_hts;../../../../../../../../components/ble/ble_services/ble_ias;../../../../../../../../components/ble/ble_services/ble_ias_c;../../../../../../../../components/ble/ble_services/ble_ipsp;../../../../../../../../components/ble/ble_services/ble_lbs;../../../../../../../../components/ble/ble_services/ble_lbs_c;../../../../../../../../components/ble/ble_services/ble_lls;../../../../../../../../components/ble/ble_services/ble_nus;../../../../../../../../components/ble/ble_services/ble_nus_c;../../../../../../../../components/ble/ble_services/ble_rscs;../../../../../../../../components/ble/ble_services/ble_rscs_c;../../../../../../../../components/ble/ble_services/ble_tps;../../../../../../../../components/ble/common;../../../../../../../../components/ble/nrf_ble_qwr;../../../../../../../../components/ble/peer_manager;../../../../../../../../components/boards;../../../../../../../../components/drivers_nrf/usbd;../../../../../../../../components/iot/ble_6lowpan;../../../../../../../../components/iot/common;../../../../../../../../components/iot/context_manager;../../../../../../../../components/iot/iot_timer;../../../../../../../../components/iot/medium;../../../../../../../../components/iot/medium/ble_ncfgs;../../../../../../../../components/iot/medium/commissioning;../../../../../../../../components/iot/mqtt;../../../../../../../../components/libraries/atomic;../../../../../../../../components/libraries/atomic_fifo;../../../../../../../../components/libraries/balloc;../../../../../../../../components/libraries/bootloader/ble_dfu;../../../../../../../../components/libraries/bsp;../../../../../../../../components/libraries/button;../../../../../../../../components/libraries/cli;../../../../../../../../components/libraries/crc16;../../../../../../../../components/libraries/crc32;../../../../../../../../components/libraries/crypto;../../../../../../../../components/libraries/csense;../../../../../../../../components/libraries/csense_drv;../../../../../../../../components/libraries/delay;../../../../../../../../components/libraries/ecc;../../../../../../../../components/libraries/experimental_section_vars;../../../../../../../../components/libraries/experimental_task_manager;../../../../../../../../components/libraries/fds;../../../../../../../../components/libraries/fifo;../../../../../../../../components/libraries/fstorage;../../../../../../../../components/libraries/gfx;../../../../../../../../components/libraries/gpiote;../../../../../../../../components/libraries/hardfault;../../../../../../../../components/libraries/hci;../../../../../../../../components/libraries/led_softblink;../../../../../../../../components/libraries/log;../../../../../../../../components/libraries/log/src;../../../../../../../../components/libraries/low_power_pwm;../../../../../../../../components/libraries/mem_manager;../../../../../../../../components/libraries/memobj;../../../../../../../../components/libraries/mpu;../../../../../../../../components/libraries/mutex;../../../../../../../../components/libraries/pwm;../../../../../../../../components/libraries/pwr_mgmt;../../../../../../../../components/libraries/queue;../../../../../../../../components/libraries/ringbuf;../../../../../../../../components/libraries/scheduler;../../../../../../../../components/libraries/sdcard;../../../../../../../../components/libraries/slip;../../../../../../../../components/libraries/sortlist;../../../../../../../../components/libraries/spi_mngr;../../../../../../../../components/libraries/stack_guard;../../../../../../../../components/libraries/strerror;../../../../../../../../components/libraries/svc;../../../../../../../../components/libraries/timer;../../../../../../../../components/libraries/twi_mngr;../../../../../../../../components/libraries/twi_sensor;../../../../../../../../components/libraries/usbd;../../../../../../../../components/libraries/usbd/class/audio;../../../../../../../../components/libraries/usbd/class/cdc;../../../../../../../../components/libraries/usbd/class/cdc/acm;../../../../../../../../components/libraries/usbd/class/hid;../../../../../../../../components/libraries/usbd/class/hid/generic;../../../../../../../../components/libraries/usbd/class/hid/kbd;../../../../../../../../components/libraries/usbd/class/hid/mouse;../../../../../../../../components/libraries/usbd/class/msc;../../../../../../../../components/libraries/util;../../../../../../../../components/nfc/ndef/conn_hand_parser;../../../../../../../../components/nfc/ndef/conn_hand_parser/ac_rec_parser;../../../../../../../../components/nfc/ndef/conn_hand_parser/ble_oob_advdata_parser;../../../../../../../../components/nfc/ndef/conn_hand_parser/le_oob_rec_parser;../../../../../../../../components/nfc/ndef/connection_handover/ac_rec;../../../../../../../../components/nfc/ndef/connection_handover/ble_oob_advdata;../../../../../../../../components/nfc/ndef/connection_handover/ble_pair_lib;../../../../../../../../components/nfc/ndef/connection_handover/ble_pair_msg;../../../../../../../../components/nfc/ndef/connection_handover/common;../../../../../../../../components/nfc/ndef/connection_handover/ep_oob_rec;../../../../../../../../components/nfc/ndef/connection_handover/hs_rec;../../../../../../../../components/nfc/ndef/connection_handover/le_oob_rec;../../../../../../../../components/nfc/ndef/generic/message;../../../../../../../../components/nfc/ndef/generic/record;../../../../../../../../components/nfc/ndef/launchapp;../../../../../../../../components/nfc/ndef/parser/message;../../../../../../../../components/nfc/ndef/parser/record;../../../../../../../../components/nfc/ndef/text;../../../../../../../../components/nfc/ndef/uri;../../../../../../../../components/nfc/t2t_lib;../../../../../../../../components/nfc/t2t_lib/hal_t2t;../../../../../../../../components/nfc/t2t_parser;../../../../../../../../components/nfc/t4t_lib;../../../../../../../../components/nfc/t4t_lib/hal_t4t;../../../../../../../../components/nfc/t4t_parser/apdu;../../../../../../../../components/nfc/t4t_parser/cc_file;../../../../../../../../components/nfc/t4t_parser/hl_detection_procedure;../../../../../../../../components/nfc/t4t_parser/tlv;../../../../../../../../components/softdevice/common;../../../../../../../../components/softdevice/s132/headers;../../../../../../../../components/softdevice/s132/headers/nrf52;../../../../../../../../components/toolchain/cmsis/include;../../..;../../../../../../../../external/fprintf;../../../../../../../../external/lwip/src/include;../../../../../../../../external/lwip/src/include/lwip;../../../../../../../../external/lwip/src/include/netif;../../../../../../../../external/lwip/src/port;../../../../../../../../external/lwip/src/port/arch;../../../../../../../../external/mbedtls/include;../../../../../../../../external/nrf_tls;../../../../../../../../external/nrf_tls/mbedtls/tls/config;../../../../../../../../external/segger_rtt;../../../../../../../../external/utf_converter;../../../../../../../../integration/nrfx;../../../../../../../../integration/nrfx/legacy;../../../../../../../../modules/nrfx;../../../../../../../../modules/nrfx/drivers/include;../../../../../../../../modules/nrfx/hal;../../../../../../../../modules/nrfx/mdk;../config;"
-      c_preprocessor_definitions="BLE_STACK_SUPPORT_REQD;BOARD_PCA10040;CONFIG_GPIO_AS_PINRESET;FLOAT_ABI_HARD;INITIALIZE_USER_SECTIONS;MBEDTLS_CONFIG_FILE=&quot;nrf_tls_config.h&quot;;NO_VTOR_CONFIG;NRF52;NRF52832_XXAA;NRF52_PAN_74;NRF_SD_BLE_API_VERSION=6;NRF_TLS_MAX_INSTANCE_COUNT=1;S132;SOFTDEVICE_PRESENT;SWI_DISABLE0;"
+      c_preprocessor_definitions="BLE_STACK_SUPPORT_REQD;BOARD_PCA10040;CONFIG_GPIO_AS_PINRESET;FLOAT_ABI_HARD;INITIALIZE_USER_SECTIONS;MBEDTLS_CONFIG_FILE=&quot;nrf_tls_config.h&quot;;NO_VTOR_CONFIG;NRF52;NRF52832_XXAA;NRF52_PAN_74;NRF_SD_BLE_API_VERSION=6;NRF_TLS_MAX_INSTANCE_COUNT=1;S132;SOFTDEVICE_PRESENT;SWI_DISABLE0;NRF52_SERIES;CONFIG_APP_IN_CORE;NRF52832;USE_APP_CONFIG"
+      c_user_include_directories="../../../config;../../../include;../../../../../../../../components/iot/errno;../../../../../../../../components;../../../../../../../../components/ble/ble_advertising;../../../../../../../../components/ble/ble_dtm;../../../../../../../../components/ble/ble_racp;../../../../../../../../components/ble/ble_services/ble_ancs_c;../../../../../../../../components/ble/ble_services/ble_ans_c;../../../../../../../../components/ble/ble_services/ble_bas;../../../../../../../../components/ble/ble_services/ble_bas_c;../../../../../../../../components/ble/ble_services/ble_cscs;../../../../../../../../components/ble/ble_services/ble_cts_c;../../../../../../../../components/ble/ble_services/ble_dfu;../../../../../../../../components/ble/ble_services/ble_dis;../../../../../../../../components/ble/ble_services/ble_gls;../../../../../../../../components/ble/ble_services/ble_hids;../../../../../../../../components/ble/ble_services/ble_hrs;../../../../../../../../components/ble/ble_services/ble_hrs_c;../../../../../../../../components/ble/ble_services/ble_hts;../../../../../../../../components/ble/ble_services/ble_ias;../../../../../../../../components/ble/ble_services/ble_ias_c;../../../../../../../../components/ble/ble_services/ble_ipsp;../../../../../../../../components/ble/ble_services/ble_lbs;../../../../../../../../components/ble/ble_services/ble_lbs_c;../../../../../../../../components/ble/ble_services/ble_lls;../../../../../../../../components/ble/ble_services/ble_nus;../../../../../../../../components/ble/ble_services/ble_nus_c;../../../../../../../../components/ble/ble_services/ble_rscs;../../../../../../../../components/ble/ble_services/ble_rscs_c;../../../../../../../../components/ble/ble_services/ble_tps;../../../../../../../../components/ble/common;../../../../../../../../components/ble/nrf_ble_qwr;../../../../../../../../components/ble/peer_manager;../../../../../../../../components/boards;../../../../../../../../components/drivers_nrf/usbd;../../../../../../../../components/iot/ble_6lowpan;../../../../../../../../components/iot/common;../../../../../../../../components/iot/context_manager;../../../../../../../../components/iot/iot_timer;../../../../../../../../components/iot/medium;../../../../../../../../components/iot/medium/ble_ncfgs;../../../../../../../../components/iot/medium/commissioning;../../../../../../../../components/iot/mqtt;../../../../../../../../components/libraries/atomic;../../../../../../../../components/libraries/atomic_fifo;../../../../../../../../components/libraries/balloc;../../../../../../../../components/libraries/bootloader/ble_dfu;../../../../../../../../components/libraries/bsp;../../../../../../../../components/libraries/button;../../../../../../../../components/libraries/cli;../../../../../../../../components/libraries/crc16;../../../../../../../../components/libraries/crc32;../../../../../../../../components/libraries/crypto;../../../../../../../../components/libraries/csense;../../../../../../../../components/libraries/csense_drv;../../../../../../../../components/libraries/delay;../../../../../../../../components/libraries/ecc;../../../../../../../../components/libraries/experimental_section_vars;../../../../../../../../components/libraries/experimental_task_manager;../../../../../../../../components/libraries/fds;../../../../../../../../components/libraries/fifo;../../../../../../../../components/libraries/fstorage;../../../../../../../../components/libraries/gfx;../../../../../../../../components/libraries/gpiote;../../../../../../../../components/libraries/hardfault;../../../../../../../../components/libraries/hci;../../../../../../../../components/libraries/led_softblink;../../../../../../../../components/libraries/log;../../../../../../../../components/libraries/log/src;../../../../../../../../components/libraries/low_power_pwm;../../../../../../../../components/libraries/mem_manager;../../../../../../../../components/libraries/memobj;../../../../../../../../components/libraries/mpu;../../../../../../../../components/libraries/mutex;../../../../../../../../components/libraries/pwm;../../../../../../../../components/libraries/pwr_mgmt;../../../../../../../../components/libraries/queue;../../../../../../../../components/libraries/ringbuf;../../../../../../../../components/libraries/scheduler;../../../../../../../../components/libraries/sdcard;../../../../../../../../components/libraries/slip;../../../../../../../../components/libraries/sortlist;../../../../../../../../components/libraries/spi_mngr;../../../../../../../../components/libraries/stack_guard;../../../../../../../../components/libraries/strerror;../../../../../../../../components/libraries/svc;../../../../../../../../components/libraries/timer;../../../../../../../../components/libraries/twi_mngr;../../../../../../../../components/libraries/twi_sensor;../../../../../../../../components/libraries/usbd;../../../../../../../../components/libraries/usbd/class/audio;../../../../../../../../components/libraries/usbd/class/cdc;../../../../../../../../components/libraries/usbd/class/cdc/acm;../../../../../../../../components/libraries/usbd/class/hid;../../../../../../../../components/libraries/usbd/class/hid/generic;../../../../../../../../components/libraries/usbd/class/hid/kbd;../../../../../../../../components/libraries/usbd/class/hid/mouse;../../../../../../../../components/libraries/usbd/class/msc;../../../../../../../../components/libraries/util;../../../../../../../../components/nfc/ndef/conn_hand_parser;../../../../../../../../components/nfc/ndef/conn_hand_parser/ac_rec_parser;../../../../../../../../components/nfc/ndef/conn_hand_parser/ble_oob_advdata_parser;../../../../../../../../components/nfc/ndef/conn_hand_parser/le_oob_rec_parser;../../../../../../../../components/nfc/ndef/connection_handover/ac_rec;../../../../../../../../components/nfc/ndef/connection_handover/ble_oob_advdata;../../../../../../../../components/nfc/ndef/connection_handover/ble_pair_lib;../../../../../../../../components/nfc/ndef/connection_handover/ble_pair_msg;../../../../../../../../components/nfc/ndef/connection_handover/common;../../../../../../../../components/nfc/ndef/connection_handover/ep_oob_rec;../../../../../../../../components/nfc/ndef/connection_handover/hs_rec;../../../../../../../../components/nfc/ndef/connection_handover/le_oob_rec;../../../../../../../../components/nfc/ndef/generic/message;../../../../../../../../components/nfc/ndef/generic/record;../../../../../../../../components/nfc/ndef/launchapp;../../../../../../../../components/nfc/ndef/parser/message;../../../../../../../../components/nfc/ndef/parser/record;../../../../../../../../components/nfc/ndef/text;../../../../../../../../components/nfc/ndef/uri;../../../../../../../../components/nfc/t2t_lib;../../../../../../../../components/nfc/t2t_lib/hal_t2t;../../../../../../../../components/nfc/t2t_parser;../../../../../../../../components/nfc/t4t_lib;../../../../../../../../components/nfc/t4t_lib/hal_t4t;../../../../../../../../components/nfc/t4t_parser/apdu;../../../../../../../../components/nfc/t4t_parser/cc_file;../../../../../../../../components/nfc/t4t_parser/hl_detection_procedure;../../../../../../../../components/nfc/t4t_parser/tlv;../../../../../../../../components/softdevice/common;../../../../../../../../components/softdevice/s132/headers;../../../../../../../../components/softdevice/s132/headers/nrf52;../../../../../../../../components/toolchain/cmsis/include;../../..;../../../../../../../../external/fprintf;../../../../../../../../external/lwip/src/include;../../../../../../../../external/lwip/src/include/lwip;../../../../../../../../external/lwip/src/include/netif;../../../../../../../../external/lwip/src/port;../../../../../../../../external/lwip/src/port/arch;../../../../../../../../external/mbedtls/include;../../../../../../../../external/nrf_tls;../../../../../../../../external/nrf_tls/mbedtls/tls/config;../../../../../../../../external/segger_rtt;../../../../../../../../external/utf_converter;../../../../../../../../integration/nrfx;../../../../../../../../integration/nrfx/legacy;../../../../../../../../modules/nrfx;../../../../../../../../modules/nrfx/drivers/include;../../../../../../../../modules/nrfx/hal;../../../../../../../../modules/nrfx/mdk;../config;../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/api;../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/include;../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/api;../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/include;../../../../../../../../../nrf5SDKforMeshv310src/mesh/prov/api;../../../../../../../../../nrf5SDKforMeshv310src/mesh/prov/include;../../../../../../../../../nrf5SDKforMeshv310src/mesh/access/api;../../../../../../../../../nrf5SDKforMeshv310src/mesh/access/include;../../../../../../../../../nrf5SDKforMeshv310src/mesh/stack/api;../../../../../../../../../nrf5SDKforMeshv310src/mesh/gatt/include;../../../../../../../../../nrf5SDKforMeshv310src/models/foundation/config/include;../../../../../../../../../nrf5SDKforMeshv310src/models/model_spec/generic_onoff/include;../../../../../../../../../nrf5SDKforMeshv310src/models/model_spec/common/include;../../../../../../../../../nrf5SDKforMeshv310src/external/micro-ecc;../../../../../../../../../nrf5SDKforMeshv310src/examples/common/include;../../../../../../../../../nrf5SDKforMeshv310src/mesh/dfu/api;../../../../../../../../../nrf5SDKforMeshv310src/mesh/dfu/include;../../../../../../../../../nrf5SDKforMeshv310src/mesh/gatt/api;../../../../../../../../../nrf5SDKforMeshv310src/mesh/gatt/include;../../../../../../../../../nrf5SDKforMeshv310src/models/foundation/health/include"
       debug_target_connection="J-Link"
       gcc_entry_point="Reset_Handler"
       macros="CMSIS_CONFIG_TOOL=../../../../../../../../external_tools/cmsisconfig/CMSIS_Configuration_Wizard.jar"
@@ -27,8 +27,8 @@
       linker_printf_width_precision_supported="Yes"
       linker_printf_fmt_level="long"
       linker_section_placement_file="flash_placement.xml"
-      linker_section_placement_macros="FLASH_PH_START=0x0;FLASH_PH_SIZE=0x80000;RAM_PH_START=0x20000000;RAM_PH_SIZE=0x10000;FLASH_START=0x26000;FLASH_SIZE=0x5a000;RAM_START=0x20001ed8;RAM_SIZE=0xe128"
-      linker_section_placements_segments="FLASH RX 0x0 0x80000;RAM RWX 0x20000000 0x10000"
+      linker_section_placement_macros="FLASH_PH_START=0x0;FLASH_PH_SIZE=0x78000;RAM_PH_START=0x20000000;RAM_PH_SIZE=0xf000;FLASH_START=0x26000;RAM_START=0x20002da0"
+      linker_section_placements_segments="FLASH RX 0x0 0x78000;RAM RWX 0x20000000 0xf000"
       project_directory=""
       project_type="Executable" />
       <folder Name="Segger Startup Files">
@@ -118,7 +118,9 @@
       <file file_name="../../../../../../../../components/libraries/util/app_error_weak.c" />
       <file file_name="../../../../../../../../components/libraries/fifo/app_fifo.c" />
       <file file_name="../../../../../../../../components/libraries/scheduler/app_scheduler.c" />
-      <file file_name="../../../../../../../../components/libraries/timer/app_timer.c" />
+      <file file_name="../../../../../../../../components/libraries/timer/app_timer.c">
+        <configuration Name="Release" build_exclude_from_build="Yes" />
+      </file>
       <file file_name="../../../../../../../../components/libraries/util/app_util_platform.c" />
       <file file_name="../../../../../../../../components/libraries/crc16/crc16.c" />
       <file file_name="../../../../../../../../components/libraries/fds/fds.c" />
@@ -203,13 +205,16 @@
     <folder Name="nRF_BLE">
       <file file_name="../../../../../../../../components/ble/common/ble_advdata.c" />
       <file file_name="../../../../../../../../components/ble/common/ble_srv_common.c" />
+      <file file_name="../../../../../../../../components/ble/common/ble_conn_params.c" />
     </folder>
     <folder Name="nRF_IoT">
       <file file_name="../../../../../../../../components/iot/ble_6lowpan/ble_6lowpan.c" />
       <file file_name="../../../../../../../../components/iot/errno/errno.c" />
       <file file_name="../../../../../../../../components/iot/context_manager/iot_context_manager.c" />
       <file file_name="../../../../../../../../components/iot/iot_timer/iot_timer.c" />
-      <file file_name="../../../../../../../../components/iot/medium/ipv6_medium_ble.c" />
+      <file file_name="../../../../../../../../components/iot/medium/ipv6_medium_ble.c">
+        <configuration Name="Release" build_exclude_from_build="Yes" />
+      </file>
       <file file_name="../../../../../../../../components/iot/mqtt/mqtt.c" />
       <file file_name="../../../../../../../../components/iot/mqtt/mqtt_decoder.c" />
       <file file_name="../../../../../../../../components/iot/mqtt/mqtt_encoder.c" />
@@ -233,6 +238,133 @@
       <file file_name="../../../../../../../../external/segger_rtt/SEGGER_RTT.c" />
       <file file_name="../../../../../../../../external/segger_rtt/SEGGER_RTT_Syscalls_SES.c" />
       <file file_name="../../../../../../../../external/segger_rtt/SEGGER_RTT_printf.c" />
+    </folder>
+    <folder Name="mesh_core">
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/aes_cmac.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/beacon.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/bearer_event.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/cache.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/ccm_soft.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/core_tx.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/core_tx_adv.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/core_tx_lpn.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/enc.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/event.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/fifo.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/flash_manager.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/flash_manager_defrag.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/flash_manager_internal.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/fsm.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/hal.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/heartbeat.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/internal_event.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/list.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/log.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/lpn.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/mesh_config.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/mesh_config_backend.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/mesh_config_flashman_glue.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/mesh_flash.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/mesh_lpn_subman.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/mesh_mem_stdlib.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/mesh_opt.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/msg_cache.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/msqueue.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/net_beacon.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/net_packet.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/net_state.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/network.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/nrf_flash.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/nrf_mesh.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/nrf_mesh_configure.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/nrf_mesh_keygen.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/nrf_mesh_opt.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/nrf_mesh_utils.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/packet_buffer.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/packet_mgr.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/queue.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/rand.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/replay_cache.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/timer.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/timer_scheduler.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/timeslot.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/timeslot_timer.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/toolchain.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/transport.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/uri.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/core/src/aes_renamed.c" />
+    </folder>
+    <folder Name="mesh_bearer">
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/src/ad_listener.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/src/ad_type_filter.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/src/adv_ext_packet.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/src/adv_ext_tx.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/src/adv_packet_filter.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/src/advertiser.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/src/bearer_handler.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/src/broadcast.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/src/filter_engine.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/src/gap_address_filter.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/src/instaburst.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/src/instaburst_rx.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/src/instaburst_tx.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/src/mesh_pa_lna.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/src/radio_config.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/src/rssi_filter.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/bearer/src/scanner.c" />
+    </folder>
+    <folder Name="mesh_prov">
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/prov/src/nrf_mesh_prov.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/prov/src/nrf_mesh_prov_bearer_gatt.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/prov/src/prov_beacon.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/prov/src/prov_bearer_adv.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/prov/src/prov_provisionee.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/prov/src/prov_provisioner.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/prov/src/prov_utils.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/prov/src/provisioning.c" />
+    </folder>
+    <folder Name="mesh_access">
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/access/src/access.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/access/src/access_loopback.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/access/src/access_publish.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/access/src/access_publish_retransmission.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/access/src/access_reliable.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/access/src/device_state_manager.c" />
+    </folder>
+    <folder Name="mesh_stack">
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/stack/src/mesh_stack.c" />
+    </folder>
+    <folder Name="mesh_confoguration_model">
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/models/foundation/config/src/composition_data.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/models/foundation/config/src/config_server.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/models/foundation/config/src/packed_index_list.c" />
+    </folder>
+    <folder Name="mesh_generic_OnOff_model">
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/models/model_spec/generic_onoff/src/generic_onoff_client.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/models/model_spec/common/src/model_common.c" />
+    </folder>
+    <folder Name="mesh_uECC">
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/external/micro-ecc/uECC.c" />
+    </folder>
+    <folder Name="mesh_application">
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/examples/common/src/mesh_provisionee.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/examples/common/src/assertion_handler_weak.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/examples/nrf_mesh_weak.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/examples/common/src/mesh_adv.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/examples/common/src/ble_softdevice_support.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/external/app_timer/app_timer_mesh.c">
+        <configuration Name="Release" build_exclude_from_build="No" />
+      </file>
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/examples/common/src/simple_hal.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/examples/common/src/rtt_input.c" />
+    </folder>
+    <folder Name="mesh_GATT">
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/gatt/src/mesh_gatt.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/gatt/src/proxy.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/mesh/gatt/src/proxy_filter.c" />
+    </folder>
+    <folder Name="mesh_health_model">
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/models/foundation/health/src/health_server.c" />
     </folder>
   </project>
   <configuration Name="Release"
