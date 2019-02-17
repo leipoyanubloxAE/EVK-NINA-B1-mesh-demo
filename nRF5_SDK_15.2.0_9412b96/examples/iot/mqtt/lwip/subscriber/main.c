@@ -50,7 +50,7 @@
 
 #define MQTT_TEST 1
 
-//#define MESH_TEST 1
+#define MESH_TEST 1
 
 #ifdef MESH_TEST
 #include <stdint.h>
@@ -58,12 +58,12 @@
 
 /* HAL */
 #include "boards.h"
-#include "simple_hal.h"
+//#include "simple_hal.h"
 #include "app_timer.h"
 
 /* Core */
-#include "nrf_mesh_config_core.h"
-#include "nrf_mesh_gatt.h"
+//#include "nrf_mesh_config_core.h"
+//#include "nrf_mesh_gatt.h"
 #include "nrf_mesh_configure.h"
 #include "nrf_mesh.h"
 #include "mesh_stack.h"
@@ -78,15 +78,15 @@
 #include "generic_onoff_client.h"
 
 /* Logging and RTT */
-#include "log.h"
-#include "rtt_input.h"
+#include "nrf_log.h"
+//#include "rtt_input.h"
 
 /* Example specific includes */
 #include "app_config.h"
 #include "nrf_mesh_config_examples.h"
 #include "light_switch_example_common.h"
 #include "example_common.h"
-#include "ble_softdevice_support.h"
+//#include "ble_softdevice_support.h"
 #endif
 
 #ifdef MQTT_TEST
@@ -114,7 +114,7 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
 
-#if 0
+#if 1
 #include "nrf_sdh_soc.h"
 
 #define MESH_SOC_OBSERVER_PRIO 0
@@ -583,41 +583,50 @@ const generic_onoff_client_callbacks_t client_cbs =
 
 static void device_identification_start_cb(uint8_t attention_duration_s)
 {
+#if 0
     hal_led_mask_set(LEDS_MASK, false);
     hal_led_blink_ms(BSP_LED_2_MASK  | BSP_LED_3_MASK,
                      LED_BLINK_ATTENTION_INTERVAL_MS,
                      LED_BLINK_ATTENTION_COUNT(attention_duration_s));
+#endif
+    NRF_LOG_INFO ("device_identification_start_cb");
 }
 
 static void provisioning_aborted_cb(void)
 {
+#if 0
     hal_led_blink_stop();
+#endif
+    NRF_LOG_INFO ("provisioning_aborted_cb")
 }
 
 static void provisioning_complete_cb(void)
 {
-    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Successfully provisioned\n");
+    NRF_LOG_INFO("Successfully provisioned\n");
 
+#if 0
 #if MESH_FEATURE_GATT_ENABLED
     /* Restores the application parameters after switching from the Provisioning
      * service to the Proxy  */
     gap_params_init();
     conn_params_init();
 #endif
+#endif
 
     dsm_local_unicast_address_t node_address;
     dsm_local_unicast_addresses_get(&node_address);
-    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Node Address: 0x%04x \n", node_address.address_start);
-
+    NRF_LOG_INFO("Node Address: 0x%04x \n", node_address.address_start);
+#if 0
     hal_led_blink_stop();
     hal_led_mask_set(LEDS_MASK, LED_MASK_STATE_OFF);
     hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_PROV);
+#endif
 }
 
 /* This callback is called periodically if model is configured for periodic publishing */
 static void app_gen_onoff_client_publish_interval_cb(access_model_handle_t handle, void * p_self)
 {
-     __LOG(LOG_SRC_APP, LOG_LEVEL_WARN, "Publish desired message here.\n");
+     NRF_LOG_INFO("Publish desired message here.\n");
 }
 
 /* Acknowledged transaction status callback, if acknowledged transfer fails, application can
@@ -631,16 +640,16 @@ static void app_gen_onoff_client_transaction_status_cb(access_model_handle_t mod
     switch(status)
     {
         case ACCESS_RELIABLE_TRANSFER_SUCCESS:
-            __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Acknowledged transfer success.\n");
+            NRF_LOG_INFO("Acknowledged transfer success.\n");
             break;
 
         case ACCESS_RELIABLE_TRANSFER_TIMEOUT:
-            hal_led_blink_ms(LEDS_MASK, LED_BLINK_SHORT_INTERVAL_MS, LED_BLINK_CNT_NO_REPLY);
-            __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Acknowledged transfer timeout.\n");
+            //hal_led_blink_ms(LEDS_MASK, LED_BLINK_SHORT_INTERVAL_MS, LED_BLINK_CNT_NO_REPLY);
+            NRF_LOG_INFO("Acknowledged transfer timeout.\n");
             break;
 
         case ACCESS_RELIABLE_TRANSFER_CANCELLED:
-            __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Acknowledged transfer cancelled.\n");
+            NRF_LOG_INFO("Acknowledged transfer cancelled.\n");
             break;
 
         default:
@@ -668,8 +677,8 @@ static void app_generic_onoff_client_status_cb(const generic_onoff_client_t * p_
 
 static void node_reset(void)
 {
-    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "----- Node reset  -----\n");
-    hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_RESET);
+    NRF_LOG_INFO("----- Node reset  -----\n");
+    //hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_RESET);
     /* This function may return if there are ongoing flash operations. */
     mesh_stack_device_reset();
 }
@@ -684,7 +693,7 @@ static void config_server_evt_cb(const config_server_evt_t * p_evt)
 
 static void mesh_button_event_handler(uint32_t button_number)
 {
-    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Button %u pressed\n", button_number);
+    NRF_LOG_INFO("Button %u pressed\n", button_number);
 
     uint32_t status = NRF_SUCCESS;
     generic_onoff_set_params_t set_params;
@@ -721,7 +730,7 @@ static void mesh_button_event_handler(uint32_t button_number)
             /* In this examples, users will not be blocked if the model is busy */
             (void)access_model_reliable_cancel(m_clients[0].model_handle);
             status = generic_onoff_client_set(&m_clients[0], &set_params, &transition_params);
-            hal_led_pin_set(BSP_LED_0, set_params.on_off);
+            //hal_led_pin_set(BSP_LED_0, set_params.on_off);
             break;
 
         case 2:
@@ -729,7 +738,7 @@ static void mesh_button_event_handler(uint32_t button_number)
             /* Demonstrate un-acknowledged transaction, using 2nd client model instance */
             status = generic_onoff_client_set_unack(&m_clients[1], &set_params,
                                                     &transition_params, APP_UNACK_MSG_REPEAT_COUNT);
-            hal_led_pin_set(BSP_LED_1, set_params.on_off);
+            //hal_led_pin_set(BSP_LED_1, set_params.on_off);
             break;
     }
 
@@ -741,8 +750,8 @@ static void mesh_button_event_handler(uint32_t button_number)
         case NRF_ERROR_NO_MEM:
         case NRF_ERROR_BUSY:
         case NRF_ERROR_INVALID_STATE:
-            __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Client %u cannot send\n", button_number);
-            hal_led_blink_ms(LEDS_MASK, LED_BLINK_SHORT_INTERVAL_MS, LED_BLINK_CNT_NO_REPLY);
+            NRF_LOG_INFO("Client %u cannot send\n", button_number);
+            //hal_led_blink_ms(LEDS_MASK, LED_BLINK_SHORT_INTERVAL_MS, LED_BLINK_CNT_NO_REPLY);
             break;
 
         case NRF_ERROR_INVALID_PARAM:
@@ -753,7 +762,7 @@ static void mesh_button_event_handler(uint32_t button_number)
              * It is the provisioner that adds an application key, binds it to the model and sets
              * the model's publication state.
              */
-            __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Publication not configured for client %u\n", button_number);
+            NRF_LOG_INFO("Publication not configured for client %u\n", button_number);
             break;
 
         default:
@@ -762,6 +771,7 @@ static void mesh_button_event_handler(uint32_t button_number)
     }
 }
 
+#if 0
 static void rtt_input_handler(int key)
 {
     if (key >= '0' && key <= '3')
@@ -770,11 +780,12 @@ static void rtt_input_handler(int key)
         mesh_button_event_handler(button_number);
     }
 }
+#endif
 
 
 static void models_init_cb(void)
 {
-    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Initializing and adding models\n");
+    NRF_LOG_INFO("Initializing and adding models\n");
 
     for (uint32_t i = 0; i < CLIENT_MODEL_INSTANCE_COUNT; ++i)
     {
@@ -802,9 +813,10 @@ static void mesh_init(void)
 
 static void mesh_initialize(void)
 {
-    __LOG_INIT(LOG_SRC_APP | LOG_SRC_ACCESS | LOG_SRC_BEARER, LOG_LEVEL_INFO, LOG_CALLBACK_DEFAULT);
+    __LOG_INIT(LOG_SRC_APP | LOG_SRC_ACCESS, LOG_LEVEL_INFO, LOG_CALLBACK_DEFAULT);
     __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "----- BLE Mesh Light Switch Client Demo -----\n");
 
+#if 0  
     ERROR_CHECK(app_timer_init());
     hal_leds_init();
 
@@ -818,13 +830,13 @@ static void mesh_initialize(void)
     gap_params_init();
     conn_params_init();
 #endif
-
+#endif
     mesh_init();
 }
 
 static void mesh_start(void)
 {
-    rtt_input_enable(rtt_input_handler, RTT_INPUT_POLL_PERIOD_MS);
+    //rtt_input_enable(rtt_input_handler, RTT_INPUT_POLL_PERIOD_MS);
 
     if (!m_device_provisioned)
     {
@@ -842,11 +854,16 @@ static void mesh_start(void)
     }
 
     //mesh_app_uuid_print(nrf_mesh_configure_device_uuid_get());
+    const uint8_t *p_uuid = nrf_mesh_configure_device_uuid_get();
+    NRF_LOG_INFO("Device UUID");
+    NRF_LOG_RAW_HEXDUMP_INFO(p_uuid, NRF_MESH_UUID_SIZE);
 
     ERROR_CHECK(mesh_stack_start());
 
+#if 0
     hal_led_mask_set(LEDS_MASK, LED_MASK_STATE_OFF);
     hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_START);
+#endif
 }
 
 /**
@@ -895,8 +912,16 @@ int main(void)
 
     NRF_LOG_INFO("Application started.");
 
+#if MESH_TEST
+    mesh_initialize();
+#endif
+
     // Start execution.
     connectable_mode_enter();
+
+#if MESH_TEST
+    mesh_start();
+#endif
 
     // Enter main loop.
     for (;;)
@@ -912,6 +937,7 @@ int main(void)
     }
 #endif
 #if MESH_TEST
+#ifndef MQTT_TEST
     mesh_initialize();
     mesh_start();
 
@@ -920,5 +946,6 @@ int main(void)
     {
             sd_app_evt_wait();
     }
+#endif
 #endif
 }

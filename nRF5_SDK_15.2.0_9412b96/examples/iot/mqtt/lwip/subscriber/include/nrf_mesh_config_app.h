@@ -49,21 +49,15 @@
  */
 
 /**
- * @defgroup MODEL_CONFIG Model layer configuration parameters
- */
-
-/** Define for acknowledging message transaction timeout.
- * @note Mesh Profile Specification v1.0 recommends this to be minimum 60s.
- */
-#define MODEL_ACKNOWLEDGED_TRANSACTION_TIMEOUT  (SEC_TO_US(10))
-
-/** @} end of MODEL_CONFIG */
-
-/**
  * @defgroup DEVICE_CONFIG Device configuration
  *
  * @{
  */
+
+#include "fds.h"
+#include "fds_internal_defs.h"
+
+#define FLASH_MANAGER_RECOVERY_PAGE_OFFSET_PAGES FDS_PHY_PAGES
 
 /** Device company identifier. */
 #define DEVICE_COMPANY_ID (ACCESS_COMPANY_ID_NORDIC)
@@ -138,9 +132,9 @@
  * @{
  */
 /** Maximum number of subnetworks. */
-#define DSM_SUBNET_MAX                                  (4)
+#define DSM_SUBNET_MAX                                  (1)
 /** Maximum number of applications. */
-#define DSM_APP_MAX                                     (8)
+#define DSM_APP_MAX                                     (1)
 /** Maximum number of device keys. */
 #define DSM_DEVICE_MAX                                  (1)
 /** Maximum number of virtual addresses. */
@@ -151,36 +145,7 @@
 #define DSM_FLASH_PAGE_COUNT                            (1)
 /** @} end of DSM_CONFIG */
 
+
 /** @} */
-
-/**
- * @defgroup NRF_MESH_CONFIG_CORE Compile time configuration
- * Configuration of the compilation of the core mesh modules.
- * @ingroup CORE_CONFIG
- * @{
- */
-
-/**
- * @defgroup MESH_CONFIG_GATT GATT configuration defines
- * @{
- */
-/** PB-GATT feature. To be enabled only in combination with linking GATT files. */
-#define MESH_FEATURE_PB_GATT_ENABLED                    (1)
-/** GATT proxy feature. To be enabled only in combination with linking GATT proxy files. */
-#define MESH_FEATURE_GATT_PROXY_ENABLED                 (1)
-/** @} end of MESH_CONFIG_GATT */
-
-/**
- * @defgroup BLE_SOFTDEVICE_SUPPORT_CONFIG BLE SoftDevice support module configuration.
- * @ingroup MESH_API_GROUP_APP_SUPPORT
- * Configuration for compile time. Part of BLE SoftDevice support module.
- *
- * @{
- */
-/** GAP device name. */
-#define GAP_DEVICE_NAME                 "nRF5x Mesh Switch"
-/** @} end of BLE_SOFTDEVICE_SUPPORT_CONFIG */
-
-/** @} end of NRF_MESH_CONFIG_CORE */
 
 #endif /* NRF_MESH_CONFIG_APP_H__ */
