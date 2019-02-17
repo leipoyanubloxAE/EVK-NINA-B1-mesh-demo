@@ -214,7 +214,7 @@ uint32_t hal_buttons_init(hal_button_handler_cb_t cb)
  *****************************************************************************/
 
 #if BUTTON_BOARD
-#if 0
+#if 1
 void GPIOTE_IRQHandler(void)
 {
     NRF_GPIOTE->EVENTS_PORT = 0;
