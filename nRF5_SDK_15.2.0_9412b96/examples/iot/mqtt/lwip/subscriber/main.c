@@ -87,6 +87,7 @@
 #include "light_switch_example_common.h"
 #include "example_common.h"
 //#include "ble_softdevice_support.h"
+
 #endif
 
 #ifdef MQTT_TEST
@@ -121,7 +122,13 @@
 
 static void mesh_soc_evt_handler(uint32_t evt_id, void * p_context)
 {
+    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "-- evt_id: %d p_context: 0x%x\n", evt_id, p_context);
+    /* evt_id 4 is NRF_EVT_RADIO_BLOCKED. When this event is passed to mesh, system crash */
+    #if 0
     nrf_mesh_on_sd_evt(evt_id);
+    #else
+    if(evt_id!=4) nrf_mesh_on_sd_evt(evt_id);
+    #endif
 }
 NRF_SDH_SOC_OBSERVER(m_mesh_soc_observer, MESH_SOC_OBSERVER_PRIO, mesh_soc_evt_handler, NULL);
 #endif
@@ -914,14 +921,11 @@ int main(void)
 
 #if MESH_TEST
     mesh_initialize();
+    mesh_start();
 #endif
 
     // Start execution.
     connectable_mode_enter();
-
-#if MESH_TEST
-    mesh_start();
-#endif
 
     // Enter main loop.
     for (;;)
