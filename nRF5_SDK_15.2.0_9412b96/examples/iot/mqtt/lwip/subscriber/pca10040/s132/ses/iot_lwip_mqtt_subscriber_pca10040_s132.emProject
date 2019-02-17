@@ -355,7 +355,9 @@
       <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/external/app_timer/app_timer_mesh.c">
         <configuration Name="Release" build_exclude_from_build="No" />
       </file>
-      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/examples/common/src/simple_hal.c" />
+      <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/examples/common/src/simple_hal.c">
+        <configuration Name="Release" build_exclude_from_build="Yes" />
+      </file>
       <file file_name="../../../../../../../../../nrf5SDKforMeshv310src/examples/common/src/rtt_input.c" />
     </folder>
     <folder Name="mesh_GATT">
