@@ -71,6 +71,7 @@
 
 #define APP_STATE_OFF                (0)
 #define APP_STATE_ON                 (1)
+static bool m_OnOff = false;
 
 #define APP_UNACK_MSG_REPEAT_COUNT   (2)
 
@@ -192,6 +193,7 @@ void mesh_main_button_event_handler(uint32_t button_number)
 
     switch(button_number)
     {
+    #if 0
         case 0:
         case 2:
             set_params.on_off = APP_STATE_ON;
@@ -201,6 +203,15 @@ void mesh_main_button_event_handler(uint32_t button_number)
         case 3:
             set_params.on_off = APP_STATE_OFF;
             break;
+    #else
+        case 0:
+        case 2:
+        case 1:
+        case 3:
+            m_OnOff = !m_OnOff;
+            set_params.on_off = m_OnOff;
+            break;
+    #endif
     }
 
     set_params.tid = tid++;

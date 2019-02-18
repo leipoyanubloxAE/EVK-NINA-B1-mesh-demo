@@ -492,7 +492,7 @@ static void button_event_handler(uint32_t button_number)
             clear_app_data();
             mesh_stack_config_clear();
 
-            hal_led_blink_ms(1 << BSP_LED_3, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_PROV);
+            hal_led_blink_ms(1 << BSP_LED_0, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_PROV);
             __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "----- Press reset button or power cycle the device  -----\n");
             break;
         }
