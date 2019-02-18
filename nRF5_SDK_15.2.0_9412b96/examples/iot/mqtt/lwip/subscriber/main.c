@@ -88,6 +88,8 @@
 #include "example_common.h"
 //#include "ble_softdevice_support.h"
 
+static bool m_OnOff = false;
+static void mesh_button_event_handler(uint32_t button_number);
 #endif
 
 #ifdef MQTT_TEST
@@ -149,11 +151,21 @@ static const ipv6_addr_t m_broker_addr =
      0x00, 0x00, 0x00, 0x01}
 };
 #else
+/*
 static const ipv6_addr_t m_broker_addr =
 {
     .u8 =
     {0x20, 0x01, 0x04, 0x70,
      0x00, 0x19, 0x14, 0xfd,
+     0x00, 0x00, 0x00, 0x00,
+     0x00, 0x00, 0x00, 0x10}
+};
+*/
+static const ipv6_addr_t m_broker_addr =
+{
+    .u8 =
+    {0x20, 0x01, 0x04, 0x70,
+     0x00, 0x19, 0x09, 0x9b,
      0x00, 0x00, 0x00, 0x00,
      0x00, 0x00, 0x00, 0x10}
 };
@@ -301,6 +313,16 @@ static void button_event_handler(uint8_t pin_no, uint8_t button_action)
                 app_mqtt_connect();
                 break;
             }
+            #ifdef MESH_TEST
+            case BSP_BUTTON_1:
+            {
+                NRF_LOG_INFO ("Button 1 is pressed. Toggle light");
+                m_OnOff = !m_OnOff;
+                mesh_button_event_handler(0);
+                mesh_button_event_handler(2);
+                break;
+            }
+            #endif
             default:
                 break;
         }
@@ -488,11 +510,21 @@ void app_mqtt_evt_handler(mqtt_client_t * const p_client, const mqtt_evt_t * p_e
                     (p_evt->param.publish.message.payload.p_bin_str[0] == 0x30))
                 {
                     LEDS_OFF(LED_ONE);
+                    #ifdef MESH_TEST
+                    m_OnOff = false;
+                    mesh_button_event_handler(0);
+                    mesh_button_event_handler(2);
+                    #endif
                 }
                 else if ((p_evt->param.publish.message.payload.p_bin_str[0] == 1) ||
                          (p_evt->param.publish.message.payload.p_bin_str[0] == 0x31))
                 {
                     LEDS_ON(LED_ONE);
+                    #ifdef MESH_TEST
+                    m_OnOff = true;
+                    mesh_button_event_handler(0);
+                    mesh_button_event_handler(2);
+                    #endif
                 }
             }
             if (p_evt->param.publish.message.topic.qos == MQTT_QoS_1_ATLEAST_ONCE)
@@ -710,7 +742,7 @@ static void mesh_button_event_handler(uint32_t button_number)
     /* Button 1: On, Button 2: Off, Client[0]
      * Button 2: On, Button 3: Off, Client[1]
      */
-
+    #if 0
     switch(button_number)
     {
         case 0:
@@ -723,6 +755,9 @@ static void mesh_button_event_handler(uint32_t button_number)
             set_params.on_off = APP_STATE_OFF;
             break;
     }
+    #else
+    set_params.on_off = m_OnOff;
+    #endif
 
     set_params.tid = tid++;
     transition_params.delay_ms = APP_CONFIG_ONOFF_DELAY_MS;
@@ -733,11 +768,16 @@ static void mesh_button_event_handler(uint32_t button_number)
     {
         case 0:
         case 1:
+            #if 0
             /* Demonstrate acknowledged transaction, using 1st client model instance */
             /* In this examples, users will not be blocked if the model is busy */
             (void)access_model_reliable_cancel(m_clients[0].model_handle);
             status = generic_onoff_client_set(&m_clients[0], &set_params, &transition_params);
             //hal_led_pin_set(BSP_LED_0, set_params.on_off);
+            #else
+            status = generic_onoff_client_set_unack(&m_clients[0], &set_params,
+                                                    &transition_params, APP_UNACK_MSG_REPEAT_COUNT);
+            #endif
             break;
 
         case 2:
