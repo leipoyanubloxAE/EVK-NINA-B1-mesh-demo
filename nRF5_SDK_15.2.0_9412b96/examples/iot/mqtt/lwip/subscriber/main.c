@@ -547,6 +547,9 @@ void app_mqtt_evt_handler(mqtt_client_t * const p_client, const mqtt_evt_t * p_e
         case MQTT_EVT_DISCONNECT:
         {
             NRF_LOG_INFO (">> MQTT_EVT_DISCONNECT");
+            LEDS_ON(LED_ONE);
+            LEDS_OFF(LED_TWO);
+            app_mqtt_connect();
             break;
         }
         default:
