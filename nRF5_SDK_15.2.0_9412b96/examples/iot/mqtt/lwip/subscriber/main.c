@@ -632,6 +632,9 @@ static void device_identification_start_cb(uint8_t attention_duration_s)
                      LED_BLINK_ATTENTION_COUNT(attention_duration_s));
 #endif
     NRF_LOG_INFO ("device_identification_start_cb");
+    LEDS_OFF(LED_ONE);
+    LEDS_OFF(LED_TWO);
+    LEDS_ON(LED_ONE);
 }
 
 static void provisioning_aborted_cb(void)
@@ -658,6 +661,9 @@ static void provisioning_complete_cb(void)
     dsm_local_unicast_address_t node_address;
     dsm_local_unicast_addresses_get(&node_address);
     NRF_LOG_INFO("Node Address: 0x%04x \n", node_address.address_start);
+
+    LEDS_OFF(LED_ONE);
+    LEDS_OFF(LED_TWO);
 #if 0
     hal_led_blink_stop();
     hal_led_mask_set(LEDS_MASK, LED_MASK_STATE_OFF);
@@ -900,6 +906,9 @@ static void mesh_start(void)
             .prov_abort_cb = provisioning_aborted_cb,
             .p_device_uri = EX_URI_LS_CLIENT
         };
+
+        LEDS_ON(LED_ONE);
+        LEDS_ON(LED_TWO);
         ERROR_CHECK(mesh_provisionee_prov_start(&prov_start_params));
     }
 
