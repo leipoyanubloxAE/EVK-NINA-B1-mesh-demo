@@ -25,6 +25,8 @@ MQTT subscriber test need to work together with a Raspberry Pi supporting Blueto
 - Press SW1 button on the Client to connect the the MQTT server. MQTT server IP address is in the main.c. Once connection is successful, Client LED will turn BLUE and subscription will be done. Subscried topic is "led/state".
 - Use MQTT app on a mobile phone to connect the the same MQTT server and publish 1 or 0 to the same topic "led/state". The message will be received by the Client and LEDs on Servers will be switched on and off based on the value.
 
+Note that the provisioning info can be reset by pressing SW1 button during reset.
+
 ### Building the demo
 To run the demo, you can use the precompiled firmware, or use Segger Embedded Studio to compile the firmware.
 

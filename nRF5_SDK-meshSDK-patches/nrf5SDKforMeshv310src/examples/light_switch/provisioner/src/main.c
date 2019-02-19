@@ -566,8 +566,20 @@ static void mesh_init(void)
     }
     else
     {
-        __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Restored: Handles \n");
-        prov_helper_device_handles_load();
+        nrf_gpio_cfg_input(BUTTON_1,GPIO_PIN_CNF_PULL_Pullup);
+        if (nrf_gpio_pin_read(BUTTON_1)==0)
+        {
+            clear_app_data();
+            mesh_stack_config_clear();
+            nrf_delay_ms(500);
+
+            hal_led_blink_ms(1 << BSP_LED_0, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_PROV);
+        }
+        else
+        {
+            __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Restored: Handles \n");
+            prov_helper_device_handles_load();
+        }
     }
 
     node_setup_cb_set(app_config_successful_cb, app_config_failed_cb);

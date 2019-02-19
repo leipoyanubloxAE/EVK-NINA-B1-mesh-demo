@@ -59,6 +59,7 @@
 /* HAL */
 #include "boards.h"
 //#include "simple_hal.h"
+#include "nrf_delay.h"
 #include "app_timer.h"
 
 /* Core */
@@ -910,6 +911,16 @@ static void mesh_start(void)
         LEDS_ON(LED_ONE);
         LEDS_ON(LED_TWO);
         ERROR_CHECK(mesh_provisionee_prov_start(&prov_start_params));
+    }
+    else
+    {
+        nrf_gpio_cfg_input(BUTTON_1,GPIO_PIN_CNF_PULL_Pullup);
+        if (nrf_gpio_pin_read(BUTTON_1)==0)
+        {
+            mesh_stack_config_clear();
+            nrf_delay_ms(500);
+            node_reset();
+        }
     }
 
     //mesh_app_uuid_print(nrf_mesh_configure_device_uuid_get());
