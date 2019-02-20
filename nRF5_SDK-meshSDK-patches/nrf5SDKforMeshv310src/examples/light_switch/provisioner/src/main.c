@@ -566,7 +566,7 @@ static void mesh_init(void)
     }
     else
     {
-        nrf_gpio_cfg_input(BUTTON_1,GPIO_PIN_CNF_PULL_Pullup);
+        //nrf_gpio_cfg_input(BUTTON_1,GPIO_PIN_CNF_PULL_Pullup);
         if (nrf_gpio_pin_read(BUTTON_1)==0)
         {
             clear_app_data();
