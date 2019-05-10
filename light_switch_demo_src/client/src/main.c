@@ -477,8 +477,8 @@ void uart_event_handle(app_uart_evt_t * p_event)
             {
                 if (index > 1)
                 {
-                    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Received data from UART (%d): %s\n", index, m_uart_data);
-                    __LOG_XB(LOG_SRC_APP, LOG_LEVEL_INFO, "data dump", m_uart_data, index);
+                    //__LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Received data from UART (%d): %s\n", index, m_uart_data);
+                    //__LOG_XB(LOG_SRC_APP, LOG_LEVEL_INFO, "data dump", m_uart_data, index);
                     m_uart_data_size = index-1;
                     m_uart_data_ready = true;
                 }
@@ -603,7 +603,7 @@ void config_onoffserver(uint16_t target_addr, bool status)
         __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "access_model_publish_application_set failed: 0x%x\n", result);
     }
 
-    config_server_get_status();
+    //config_server_get_status();
 
     set_params.on_off = status;
     set_params.tid = tid++;
@@ -640,11 +640,16 @@ static bool extract_node_status(uint8_t* data, uint8_t length, uint16_t* node, b
         return false;
     }
 
-    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "data: %s length: %d\n", data, length);
+    //__LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "data: %s length: %d\n", data, length);
 
     node_start = strstr(data, ":") + 1; 
     node_end = strstr(node_start, ",") - 1;
 
+    if(node_start==NULL || node_end == NULL)
+    {
+        __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "node_start %s NULL, node_end %s NULL\n", node_start==NULL? "is": "is not", node_end==NULL? "is" : "is not");
+        return false;
+    }
     while((*node_start == ' ' || *node_start == '"') && (node_start < node_end))
     {
         node_start++;
@@ -655,24 +660,32 @@ static bool extract_node_status(uint8_t* data, uint8_t length, uint16_t* node, b
     }
     if(node_start==node_end)
     {
+        __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "node_start equals node_end\n");
         return false;
     }
 
+
     status_start = strstr(node_end, ":") + 1;
     status_end = strstr(status_start, "}");
+    if(status_start==NULL || status_end==NULL)
+    {
+        __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "status_start %s NULL, status_end %s NULL\n", status_start==NULL? "is": "is not", status_end==NULL? "is" : "is not");
+        return false;
+    }
     while((*status_start == ' ' || *status_start == '"') && (status_start < status_end))
     {
         status_start++;
     }
     if(status_start==status_end)
     {
+        __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "status_start equals status_end\n");
         return false;
     }
 
     *node = hexStringToNum(node_start, node_end-node_start+1);
     *status = hexStringToNum(status_start, 1) == 0 ? false : true;
 
-    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "node_start: %s node_end: %s status_start: %s status_end: %s node: 0x%x status: %d\n", node_start, node_end, status_start, status_end, *node, *status);
+    //__LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "node_start: %s node_end: %s status_start: %s status_end: %s node: 0x%x status: %d\n", node_start, node_end, status_start, status_end, *node, *status);
 
     return true;
 }
