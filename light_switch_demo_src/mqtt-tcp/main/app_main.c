@@ -33,11 +33,14 @@ uint8_t m_mac[6];
 #define TOPIC_LEN 128
 char m_pub_topic[TOPIC_LEN];
 char m_sub_topic[TOPIC_LEN];
+char m_sub_topic_recover[TOPIC_LEN];
 
 #define UART1_TXD  (GPIO_NUM_5)
 #define UART1_RXD  (GPIO_NUM_18)
 #define UART1_RTS  (UART_PIN_NO_CHANGE)
 #define UART1_CTS  (UART_PIN_NO_CHANGE)
+
+#define MESH_CLIENT_RESET (GPIO_NUM_15)
 
 #define BUF_SIZE (1024)
 #define RD_BUF_SIZE (BUF_SIZE)
@@ -47,6 +50,19 @@ static QueueHandle_t uart_queue;
 
 
 esp_mqtt_client_handle_t m_pub_client=-1;
+
+static void gpio_set(gpio_num_t pin, uint32_t level)
+{
+    /* Configure the button GPIO as input, enable wakeup */
+    const int button_gpio_num = pin;
+    gpio_config_t config = {
+            .pin_bit_mask = BIT64(button_gpio_num),
+            .mode = GPIO_MODE_OUTPUT
+    };
+    ESP_ERROR_CHECK(gpio_config(&config));
+
+    gpio_set_level(pin, level);
+}
 
 static void uart_event_task(void *pvParameters)
 {
@@ -150,6 +166,7 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
             m_pub_client = client;
             
             msg_id = esp_mqtt_client_subscribe(client, m_sub_topic, 0);
+            msg_id = esp_mqtt_client_subscribe(client, m_sub_topic_recover, 0);
             ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
             
             break;
@@ -175,8 +192,16 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
             printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
             printf("DATA=%.*s\r\n", event->data_len, event->data);
             // Write data back to the UART
-            uart_write_bytes(EX_UART_NUM, (const char *) event->data, event->data_len);
-            uart_write_bytes(EX_UART_NUM, (const char *) "\n", 1);
+            if(!strncmp(event->topic, m_sub_topic, event->topic_len))
+            {
+                uart_write_bytes(EX_UART_NUM, (const char *) event->data, event->data_len);
+                uart_write_bytes(EX_UART_NUM, (const char *) "\n", 1);
+            } else if(!strncmp(event->topic, m_sub_topic_recover, event->topic_len))
+            {
+                gpio_set(MESH_CLIENT_RESET, 0);
+                vTaskDelay(100 / portTICK_PERIOD_MS);
+                gpio_set(MESH_CLIENT_RESET, 1);
+            }
             break;
         case MQTT_EVENT_ERROR:
             ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
@@ -366,9 +391,11 @@ void app_main()
     ESP_LOGI(TAG, "[APP] MAC: %X:%X:%X:%X:%X:%X", m_mac[0], m_mac[1], m_mac[2], m_mac[3], m_mac[4], m_mac[5]);
 
     memset(m_sub_topic, 0, TOPIC_LEN * sizeof(char));
+    memset(m_sub_topic_recover, 0, TOPIC_LEN * sizeof(char));
     memset(m_pub_topic, 0, TOPIC_LEN * sizeof(char));
     sprintf(m_pub_topic, "devices/LED-GW/LED-GW-0001000%02X%02X%02X/telemetry", m_mac[3], m_mac[4], m_mac[5]);
     sprintf(m_sub_topic, "devices/LED-GW/LED-GW-0001000%02X%02X%02X/config", m_mac[3], m_mac[4], m_mac[5]);
+    sprintf(m_sub_topic_recover, "devices/LED-GW/LED-GW-0001000%02X%02X%02X/recover_mesh_client", m_mac[3], m_mac[4], m_mac[5]);
     
     esp_log_level_set("*", ESP_LOG_INFO);
     esp_log_level_set("MQTT_CLIENT", ESP_LOG_VERBOSE);
