@@ -32,7 +32,7 @@ Note that the dashboard only accept messages from WiFi gateway with certain devi
   IO5  (J4 EVK-NINA-W10x) - 23  (J3 EVK-NINA-B11x)
   IO18 (J4 EVK-NINA-W10x) - 22  (J3 EVK-NINA-B11x)
   GND  (J4 EVK-NINA-W10x) - GND (J4 EVK-NINA-B11x)
-- Install the app-wifi-sec1-debug-28-9-2018.apk in the repository (or download from https://github.com/espressif/esp-idf-provisioning-android/releases ) on Android phone. Use it to provision EVK-NINA-W10x with the SSID and password of the router.
+- Install the app-wifi-sec1-debug-28-9-2018.apk in the repository (or download from https://github.com/espressif/esp-idf-provisioning-android/releases ) on Android phone. Use it to provision EVK-NINA-W10x with the SSID and password of the router. SSID running on the module will be PROV_XXXX with password PROV_PASS. If NINA-W10 has already been provisioned, pressing and holding SW1 while resetting the module will force the module to enter provisioning mode. 
 - Use a browser to open url http://ubx.ddns.net:1880/ui . The LED status should be displayed. Control the LED by pressing the individual LED switch or group switch.
 
 Note that the provisioning info can be reset by pressing SW1 button during reset.
