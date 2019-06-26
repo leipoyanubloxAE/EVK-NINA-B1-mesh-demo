@@ -211,7 +211,7 @@ static void app_generic_onoff_client_status_cb(const generic_onoff_client_t * p_
     }
 
     memset(msg, 0, 64 * sizeof(uint8_t));
-    sprintf(msg, "{\"node\":\"%04d\",\"stat\":\"%d\"}\n", p_meta->src.value, p_in->present_on_off);
+    sprintf(msg, "{\"node\":\"%04X\",\"stat\":\"%d\"}\n", p_meta->src.value, p_in->present_on_off);
     putstring(msg);
 }
 
