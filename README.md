@@ -50,7 +50,7 @@ To compile the NINA-Bx demo firmware, please follow the steps below:
 #### EVK-NINA-W10x:
 
 To compile the NINA-W10x demo firmware, please follow the steps below:
-1. Install the toolchain, get ESP-IDF and set up the patch to ESP-IDF according to instructions at https://docs.espressif.com/projects/esp-idf/en/stable/get-started/ 
+1. Install the toolchain, get ESP-IDF and set up the patch to ESP-IDF according to instructions at https://docs.espressif.com/projects/esp-idf/en/stable/get-started/ . The ESP-IDF version used for compilation is v3.2.
 2. Go to the mqtt-tcp directory, run "make app" to build the image.
 
 Note that ESP-IDF compilation in Windows may be slow due to Windows secruity with many files and folders being created. Either exclude the mqtt-tcp directory from Windows security or run in Linux distribution, e.g. Ubuntu.
